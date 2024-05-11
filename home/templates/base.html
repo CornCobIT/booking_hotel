@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,6 +11,17 @@
       integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
       crossorigin="anonymous"
     />
+    <link
+      rel="stylesheet"
+      href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+      $(function () {
+        $(".datepicker").datepicker();
+      });
+    </script>
     <style>
       /* grouped css attributes via type */
       body {
@@ -381,7 +393,7 @@
       }
       .divider {
         border: none;
-        border-top: 1px solid #000; 
+        border-top: 1px solid #000;
         flex-grow: 1; /* Kéo dài line để điền vào khoảng trống */
         margin: 30px 10px; /* Khoảng cách giữa line và các nút */
       }
@@ -499,7 +511,11 @@
           id="navbarNav"
         >
           <ul class="navbar-nav">
-            {% if user.is_authenticated %}
+            {% if user.is_authenticated %} {% if user.is_superuser %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+            </li>
+            {% endif %}
             <li class="nav-item">
               <a class="nav-link" href="#">Profile</a>
             </li>
