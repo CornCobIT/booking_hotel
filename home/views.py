@@ -1,19 +1,17 @@
-
 from django.shortcuts import render , redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate , login
+from django.contrib.auth import authenticate , login, logout as auth_logout
 from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
-from .models import (Amenities, Hotel, HotelBooking)
+from .models import (Amenities, Room, RoomBooking)
 from django.db.models import Q
+from .forms import BookingForm
 
-
-
-def check_booking(start_date  , end_date ,uid , room_count):
-    qs = HotelBooking.objects.filter(
-        start_date__lte=start_date,
-        end_date__gte=end_date,
-        hotel__uid = uid
+def check_booking(check_in_date, check_out_date, id, room_count):
+    qs = RoomBooking.objects.filter(
+        check_in_date__lte=check_in_date,
+        check_out_date__gte=check_out_date,
+        room__id = id
         )
     
     if len(qs) >= room_count:
@@ -21,60 +19,61 @@ def check_booking(start_date  , end_date ,uid , room_count):
     
     return True
     
+from django.shortcuts import render
+from .models import Amenities, Room
+
 def home(request):
     amenities_objs = Amenities.objects.all()
-    hotels_objs = Hotel.objects.all()
-
+    rooms_objs = Room.objects.all()
     sort_by = request.GET.get('sort_by')
     search = request.GET.get('search')
     amenities = request.GET.getlist('amenities')
-    print(amenities)
+
     if sort_by:
         if sort_by == 'ASC':
-            hotels_objs = hotels_objs.order_by('hotel_price')
+            rooms_objs = rooms_objs.order_by('room_price')
         elif sort_by == 'DSC':
-            hotels_objs = hotels_objs.order_by('-hotel_price')
+            rooms_objs = rooms_objs.order_by('-room_price')
 
     if search:
-        hotels_objs = hotels_objs.filter(
-            Q(hotel_name__icontains = search) |
-            Q(description__icontains = search) )
+        rooms_objs = rooms_objs.filter(Q(room_name__icontains=search) | Q(description__icontains=search))
+
+    if amenities:
+        rooms_objs = rooms_objs.filter(amenities__amenity_name__in=amenities).distinct()
+
+    context = {
+        'amenities_objs': amenities_objs,
+        'rooms_objs': rooms_objs,
+        'sort_by': sort_by,
+        'search': search,
+        'amenities': amenities,
+    }
+    return render(request, 'home.html', context)
 
 
-    if len(amenities):
-        hotels_objs = hotels_objs.filter(amenities__amenity_name__in = amenities).distinct()
-
-
-
-    context = {'amenities_objs' : amenities_objs , 'hotels_objs' : hotels_objs , 'sort_by' : sort_by 
-    , 'search' : search , 'amenities' : amenities}
-    return render(request , 'home.html' ,context)
-
-
-
-def hotel_detail(request,uid):
-    hotel_obj = Hotel.objects.get(uid = uid)
-
-    if request.method == 'POST':
-        checkin = request.POST.get('checkin')
-        checkout= request.POST.get('checkout')
-        hotel = Hotel.objects.get(uid = uid)
-        if not check_booking(checkin ,checkout  , uid , hotel.room_count):
-            messages.warning(request, 'Hotel is already booked in these dates ')
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-        HotelBooking.objects.create(hotel=hotel , user = request.user , start_date=checkin
-        , end_date = checkout , booking_type  = 'Pre Paid')
-        
-        messages.success(request, 'Your booking has been saved')
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-        
-
-        
+def room_detail(request, id):
+    rooms_objs = Room.objects.get(id=id)
     
-    return render(request , 'hotel_detail.html' ,{
-        'hotels_obj' :hotel_obj
-    })
+    if request.method == 'POST':
+        form = BookingForm(request.POST)
+        if form.is_valid():
+            booking = form.save(commit=False)
+            booking.room = rooms_objs
+            booking.user = request.user
+            booking.save()
+            messages.success(request, 'Your booking has been saved')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            messages.error(request, 'Failed to save booking. Please check your input.')
+    else:
+        form = BookingForm()
+        
+    context = {
+        'rooms_objs': rooms_objs,
+        'form': form
+    }
+
+    return render(request, 'room_detail.html', context)
 
 def login_page(request):
     if request.method == 'POST':
@@ -93,12 +92,12 @@ def login_page(request):
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
         login(request , user_obj)
+        request.session['user_id'] = user_obj.id
         return redirect('/')
 
         
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     return render(request ,'login.html')
-
 
 def register_page(request):
     if request.method == 'POST':
@@ -117,3 +116,7 @@ def register_page(request):
         return redirect('/')
 
     return render(request , 'register.html')
+
+def logout(request):
+    auth_logout(request)
+    return redirect('home')
