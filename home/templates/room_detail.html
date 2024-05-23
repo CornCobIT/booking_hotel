@@ -1,38 +1,36 @@
 {% extends "base.html" %} {% block start %}
-
 <div class="container mt-5 pt-5">
   <div class="row search-card-result mt-5 pt-5">
     <div class="col-md-3">
-      <a href="/room-detail/{{rooms_objs.id}}">
+      <a href="{% url 'room_detail' room_obj.id %}">
         <img
           class="img-fluid"
-          src="/room_img/{{rooms_objs.images.first.images}}"
+          src="{{ room_obj.images.first.images.url }}"
           alt="Card image cap"
         />
       </a>
     </div>
-
     <div class="col-md-5">
-      <h5>{{ rooms_objs.room_number }}</h5>
-
-      <p>{{rooms_objs.description|truncatechars:150}}</p>
+      <h5>{{ room_obj.room_name }}</h5>
+      <p>{{ room_obj.description|truncatechars:150 }}</p>
       <p>
-        {%for amenitie in rooms_objs.amenities.all %}
-        <b>{{amenitie.amenity_name}}</b>, {% endfor %}
+        {% for amenity in room_obj.amenities.all %}
+        <b>{{ amenity.amenity_name }}</b>, {% endfor %}
       </p>
     </div>
     <div class="col-md-2 border-left text-center more-offers">
-      <p>Place.com</p>
-      <p>${{rooms_objs.price}}</p>
+      <p><strong>{{ room_obj.price }}</strong> VND / 1 night</p>
       <p>Room count</p>
-      <p>{{rooms_objs.room_count}}</p>
+      <p>{{ room_obj.room_count }}</p>
     </div>
   </div>
   <div class="row">
-    {% for image in rooms_objs.images.all %}
+    {% for image in room_obj.images.all %}
     <div class="col-md-3">
       <img
-        src="/public/room_img/{{image.images}}"
+        src="{{ image.images.url }}"
+        class="img-fluid"
+        alt="Room image"
         style="height: 150px; width: 150px"
       />
     </div>
@@ -41,40 +39,9 @@
   <div class="filter-card" id="bookingForm">
     <h5>Book Room</h5>
     <form method="post">
-      {% csrf_token %}
-      <div class="form-group">
-          {{ form.check_in_date.label_tag }}
-          {{ form.check_in_date }}
-      </div>
-      <div class="form-group">
-          {{ form.check_out_date.label_tag }}
-          {{ form.check_out_date }}
-      </div>
-      <div class="form-group">
-          {{ form.guests.label_tag }}
-          {{ form.guests }}
-      </div>
-      <div class="form-group">
-          {{ form.payment_method.label_tag }}
-          {{ form.payment_method }}
-      </div>
-      {% if form.errors %}
-          {% for field in form %}
-              {% for error in field.errors %}
-                  <div class="alert alert-danger">
-                      <strong>{{ error|escape }}</strong>
-                  </div>
-              {% endfor %}
-          {% endfor %}
-          {% for error in form.non_field_errors %}
-              <div class="alert alert-danger">
-                  <strong>{{ error|escape }}</strong>
-              </div>
-          {% endfor %}
-      {% endif %}
-      <button type="submit" class="btn btn-primary mt-3">Book Now</button>
-  </form>
+      {% csrf_token %} {% include "messages.html" %} {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
   </div>
 </div>
-
 {% endblock %}

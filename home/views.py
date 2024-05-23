@@ -18,9 +18,6 @@ def check_booking(check_in_date, check_out_date, id, room_count):
         return False
     
     return True
-    
-from django.shortcuts import render
-from .models import Amenities, Room
 
 def home(request):
     amenities_objs = Amenities.objects.all()
@@ -52,13 +49,13 @@ def home(request):
 
 
 def room_detail(request, id):
-    rooms_objs = Room.objects.get(id=id)
+    room_obj = Room.objects.get(id=id)
     
     if request.method == 'POST':
         form = BookingForm(request.POST)
         if form.is_valid():
             booking = form.save(commit=False)
-            booking.room = rooms_objs
+            booking.room = room_obj
             booking.user = request.user
             booking.save()
             messages.success(request, 'Your booking has been saved')
@@ -69,11 +66,12 @@ def room_detail(request, id):
         form = BookingForm()
         
     context = {
-        'rooms_objs': rooms_objs,
+        'room_obj': room_obj,
         'form': form
     }
 
     return render(request, 'room_detail.html', context)
+
 
 def login_page(request):
     if request.method == 'POST':
