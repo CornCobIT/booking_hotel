@@ -1,0 +1,115 @@
+{%extends 'base.html'%}
+{%block start%}
+<div class="container justify-content-center mb-5">
+    <div class="row justify-content-center align-item-center">
+        <h1>Hotel Booking</h1>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <label>First name</label>
+            <p>
+                <input type="text" name="firstname" id="firstname" class="form-control">
+            </p>
+        </div>
+        <div class="col-sm">
+            <label>Last name</label>
+            <p>
+                <input type="text" name="lastname" id="lastname" class="form-control">
+            </p>
+        </div>
+        <div class="col-sm">
+            <label>Email</label>
+            <p>
+                <input type="text" name="email" id="email" class="form-control">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <label>Room Type</label>
+            <p>
+                <select class="form-select" aria-label="Default select example">
+                    <option selected>Please Select</option>
+                    {%for room in rooms_objs%}
+                    <option value="{{room.room_name}}">{{room.room_name}}</option>
+                    {%endfor%}
+                </select>
+            </p>
+        </div>
+        <div class="col-sm">
+            <label>Phone Number</label>
+            <p>
+                <input type="text" name="phone" id="phone" class="form-control">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <label>Numbers of Adult</label>
+            <p>
+                <input type="text" name="adult" id="adult" class="form-control">
+            </p>
+        </div>
+        <div class="col-sm">
+            <label>Numbers of Children</label>
+            <p>
+                <input type="text" name="children" id="children" class="form-control">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <label>Check in date</label>
+            <p>
+                <input type="date" name="checkin" id="checkin" class="form-control">
+            </p>
+        </div>
+        <div class="col-sm">
+            <label>Check out date</label>
+            <p>
+                <input type="date" name="checkout" id="checkout" class="form-control">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <label>Payment method</label>
+        <div class="col-sm">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                <label class="form-check-label" for="flexRadioDefault2">
+                    Cash
+                </label>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                <label class="form-check-label" for="flexRadioDefault2">
+                    Paypal
+                </label>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                <label class="form-check-label" for="flexRadioDefault2">
+                    Credit Card
+                </label>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                <label class="form-check-label" for="flexRadioDefault2">
+                    Debit Card
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row form-group mt-2">
+        <div class="col-md-12">
+            <input type="submit" class="btn btn-primary btn-block" value="Submit">
+        </div>
+    </div>
+</div>
+{%endblock%}

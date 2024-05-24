@@ -3,40 +3,62 @@
 {%  block start %}
 
 <!-- jumbotron and nav -->
-<section class="colorful jumbotron mb-0" role="banner">
-    <nav class="navbar navbar-expand-lg justify-content-between navbar-dark" role="navigation">
-        <div class="navbar-brand">
-            <a href="index.html">Hotel
-                <em>.</em>
-            </a>
-        </div>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-            aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-       
-    </nav>
+<section class="jumbotron mb-0" role="banner">
+    <!--    <nav class="navbar navbar-expand-lg justify-content-between navbar-dark" role="navigation">-->
+    <!--        <div class="navbar-brand">-->
+    <!--            <a href="index.html">Hotel-->
+    <!--                <em>.</em>-->
+    <!--            </a>-->
+    <!--        </div>-->
+    <!--        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"-->
+    <!--            aria-label="Toggle navigation">-->
+    <!--            <span class="navbar-toggler-icon"></span>-->
+    <!--        </button>-->
+    <!--       -->
+    <!--    </nav>-->
 
-    <div class="container hotels-container">
+    <!--    <div class="container hotels-container">-->
 
-        <div class="row mt-2 justify-content-between">
-            <div class="col-md-8 text-white align-self-center mb-2 p-4">
-                <h1>HOTEL Place</h1>
-                <span class=""> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Harum debitis perspiciatis sed iusto
-                    eveniet neque natus quidem velit optio cumque saepe repudiandae vero, sit hic adipisci laudantium libero blanditiis
-                    animi.
-                </span>
+    <!--        <div class="row mt-2 justify-content-between"-->
+    <!--             style="background-image: url('https://mdbcdn.b-cdn.net/img/new/slides/041.webp');-->
+    <!--      height: 400px;">-->
+    <!--            <div class="col-md-8 text-white align-self-center mb-2 p-4">-->
+    <!--                <h1>The Royal Hotel</h1>-->
+    <!--                <span class=""> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Harum debitis perspiciatis sed iusto-->
+    <!--                    eveniet neque natus quidem velit optio cumque saepe repudiandae vero, sit hic adipisci laudantium libero blanditiis-->
+    <!--                    animi.-->
+    <!--                </span>-->
+    <!--            </div>-->
+
+    <!--        </div>-->
+    <!--    </div>-->
+    <!-- Background image -->
+    <div
+            class="p-5 text-center bg-image"
+            style="background-image: url('https://hips.hearstapps.com/hmg-prod/images/posada-ayana-pool-area-1665418407.jpeg?crop=1xw:1xh;center,top&resize=980:*');
+      height: 400px;
+    "
+    >
+        <div class="mask" style="background-color: rgba(0, 0, 0, 0.6);">
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <div class="text-white">
+                    <h1 class="mb-4">The Royal Hotel</h1>
+                    <span class=""> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Harum debitis perspiciatis sed iusto
+                        eveniet neque natus quidem velit optio cumque saepe repudiandae vero, sit hic adipisci laudantium libero blanditiis
+                        animi.
+                    </span>
+                </div>
             </div>
-           
         </div>
     </div>
+    <!-- Background image -->
 </section>
 
 <section class="search-container mb-5 pb-5">
     <div class="container">
         <div class="row">
             <div class="col-lg-3">
-                <div class="row my-3">                    
+                <div class="row my-3">
                 </div>
                 <div class="row mt-2 justify-content-between">
                     <div class="filter-card">
@@ -56,10 +78,10 @@
                                     </p>
                                 </div>
                             </div>
-                           
+
                             <div class="row form-group">
                                 <div class="col-md-12">
-                                    <input type="submit" class="btn btn-primary btn-block" value="Limit">
+                                    <input type="submit" class="btn btn-primary btn-block" value="Booking Now">
                                 </div>
                             </div>
                         </form>
@@ -70,77 +92,77 @@
 
             <div class="col-lg-9  px-4 mb-5">
                 <form>
-                <div class="row mt-3">
-                    <div class="col-md-4">
-                    <div class="form-inline">
-                        <label class="" for="exampleFormControlSelect1">Sort by</label>
-                        <select class="form-control" name="sort_by" id="exampleFormControlSelect1">
-                            <option value="">Recommended</option>
-                            <option {% if sort_by == 'ASC' %} selected {%endif %} value="ASC">ASC</option>
-                            <option {% if sort_by == 'DSC' %} selected {%endif %} value="DSC">DSC</option>
-                           
-                        </select>
-                    </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-inline">
-                            <label class="" for="exampleFormControlSelect1">Search</label>
-                            <input name="search" class="form-control" value="{{search}}" placeholder="Search"> 
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <div class="form-inline">
+                                <label class="" for="exampleFormControlSelect1">Sort by</label>
+                                <select class="form-control" name="sort_by" id="exampleFormControlSelect1">
+                                    <option value="">Recommended</option>
+                                </select>
+                            </div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="form-inline">
+                                <label class="" for="exampleFormControlSelect1">Search</label>
+                                <input name="search" class="form-control" value="{{search}}" placeholder="Search">
+                            </div>
 
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-inline">
-                           <label class="" for="exampleFormControlSelect1">Amenities</label>
-                            <select name="amenities" class="form-control" multiple>
-                            <option value="">Choose</option>
-                            {% for amenities_obj in amenities_objs %}
-                            <option {% if amenities_obj.amenity_name in amenities  %} selected {%endif%}value="{{amenities_obj.amenity_name}}">{{amenities_obj.amenity_name}}</option>
-                                {% endfor %}
-                        </select>
                         </div>
+                        <div class="col-md-4">
+                            <div class="form-inline">
+                                <label class="" for="exampleFormControlSelect1">Amenities</label>
+                                <select name="amenities" class="form-control" multiple>
+                                    <option value="">Choose</option>
+                                    {% for amenities_obj in amenities_objs %}
+                                    <option {% if amenities_obj.amenity_name in amenities %} selected
+                                            {%endif%}value="{{amenities_obj.amenity_name}}">
+                                        {{amenities_obj.amenity_name}}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
 
-                    </div>
-                    <div class="col-md-4">
-                     
+                        </div>
+                        <div class="col-md-4">
+
                             <button style="margin-top: 30px;" type="submit" class="btn btn-success">Find</button>
                         </div>
-                </div>
+                    </div>
                 </form>
                 <div class="row search-card-result">
                     <h2 class="mt-3">ROOMS</h2>
-                </div> 
-                
+                </div>
+
                 {% for room in rooms_objs %}
-                    <div class="row search-card-result">                   
-                        <div class="col-md-3">
-                            <a href="{% url 'room_detail' room.id %}">
-                                <img class="img-fluid" src="{{ room.images.first.images.url }}" alt="{{ room.room_name }}">
+                <div class="row search-card-result">
+                    <div class="col-md-3">
+                        <a href="{% url 'room_detail' room.id %}">
+                            <img class="img-fluid" src="{{ room.images.first.images.url }}" alt="{{ room.room_name }}">
+                        </a>
+                    </div>
+                    <div class="col-md-5">
+                        <h5>{{ room.room_name }}</h5>
+                        <p>{{ room.description|truncatechars:150 }}</p>
+                        <p>
+                            {% for amenity in room.amenities.all %}
+                            <b>{{ amenity.amenity_name }}</b>,
+                            {% endfor %}
+                        </p>
+                    </div>
+                    <div class="col-md-2 border-left text-center more-offers">
+                        <p>{{ room.price }} VND </p>
+                        <p>/ 1 night</p>
+                        <p>Room count</p>
+                        <p>{{ room.room_count }}</p>
+                    </div>
+                    <div class="col-md-2 border-left text-center more-offers">
+                        <div class="btn btn-success">
+                            <a href="{% url 'room_detail' room.id %}" style="text-decoration: none; color: white;">
+                                View deal
                             </a>
                         </div>
-                        <div class="col-md-5">
-                            <h5>{{ room.room_name }}</h5>
-                            <p>{{ room.description|truncatechars:150 }}</p>
-                            <p>
-                                {% for amenity in room.amenities.all %}
-                                <b>{{ amenity.amenity_name }}</b>,
-                                {% endfor %}
-                            </p>
-                        </div>
-                        <div class="col-md-2 border-left text-center more-offers">
-                            <p>{{ room.price }} VND </p>
-                            <p>/ 1 night</p>
-                            <p>Room count</p>
-                            <p>{{ room.room_count }}</p>
-                        </div>
-                        <div class="col-md-2 border-left text-center more-offers">
-                            <div class="btn btn-success">
-                                <a href="{% url 'room_detail' room.id %}" style="text-decoration: none; color: white;">
-                                    View deal
-                                </a>
-                            </div>
-                        </div>
                     </div>
+                </div>
                 {% endfor %}
 
             </div>

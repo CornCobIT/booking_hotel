@@ -118,3 +118,20 @@ def register_page(request):
 def logout(request):
     auth_logout(request)
     return redirect('home')
+
+def about_us(request):
+    return render(request, 'about_us.html')
+
+def booking(request):
+    rooms_objs = Room.objects.all()
+    context = {
+        'rooms_objs': rooms_objs,
+    }
+    return render(request, 'booking.html', context)
+
+def all_room(request):
+    rooms_objs = Room.objects.all()
+    context = {
+        'rooms_objs': rooms_objs,
+    }
+    return render(request, 'all_room.html', context)
