@@ -1,31 +1,65 @@
-{% extends "base.html" %}
-
-{%  block start %}
+{% extends "base.html" %} {% block start %}
 
 <div class="container mt-5 pt-5 col-6">
+  <form method="POST">
+    {% csrf_token %} {% include "messages.html" %}
 
-    <form method="POST">
-        {% csrf_token %}
-        {%include "messages.html"%}
+    <div class="mb-3">
+      <label for="username" class="form-label">Username</label>
+      <input
+        type="text"
+        name="username"
+        required
+        class="form-control"
+        id="username"
+        aria-describedby="usernameHelp"
+      />
+    </div>
 
-        <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">Username</label>
-          <input type="text" name="username" required class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-        </div>
-        <div class="mb-3">
-          <label for="exampleInputPassword1" class="form-label">Password</label>
-          <input type="password" name="password" class="form-control" id="exampleInputPassword1">
-        </div>
-        
-        <button type="submit" class="btn btn-primary">Submit</button>
-    <br>
-    <span class="register-text">Do have an account? <a href="{% url 'login_page' %}">Login</a> </span>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input
+        type="email"
+        name="email"
+        required
+        class="form-control"
+        id="email"
+        aria-describedby="emailHelp"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input
+        type="password"
+        name="password"
+        required
+        class="form-control"
+        id="password"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="confirm_password" class="form-label">Confirm Password</label>
+      <input
+        type="password"
+        name="confirm_password"
+        required
+        class="form-control"
+        id="confirm_password"
+      />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <br />
+    <span class="register-text"
+      >Do you have an account? <a href="{% url 'login_page' %}">Login</a></span
+    >
     <hr class="divider" />
     <div class="btn-container mt-3">
       <a href="#" class="btn btn-info">Login with Facebook</a>
     </div>
-      </form>
+  </form>
 </div>
-
 
 {% endblock %}

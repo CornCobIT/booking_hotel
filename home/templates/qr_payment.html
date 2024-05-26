@@ -1,0 +1,20 @@
+{% extends "base.html" %} {% block start %} {% load static %}
+<div class="container">
+  <h2>QR Code Payment</h2>
+  <p>Total Price: {{ total_price }} VND</p>
+  <img src="{{ MEDIA_URL }}qr-code.jpg" alt="QR Code" />
+  <p>Scan the QR code to complete the payment.</p>
+  <div class="btn btn-success">
+    <a href="{% url 'home' %}" style="text-decoration: none; color: white"
+      >Done</a
+    >
+  </div>
+  <div class="btn btn-primary">
+    <a
+      href="javascript:history.back()"
+      style="text-decoration: none; color: white"
+      >Back</a
+    >
+  </div>
+</div>
+{% endblock %}

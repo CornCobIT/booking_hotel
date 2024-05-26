@@ -1,6 +1,7 @@
 {% extends "base.html" %} {% block start %}
 
 <div class="container my-5 col-6">
+  <h3 class="text-dark">Login</h3>
   <form method="POST">
     {% csrf_token %} {% include "messages.html" %}
     <div class="mb-3">
@@ -25,8 +26,10 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
-    <br>
-    <span class="register-text">Don't have an account? <a href="{% url 'register_page' %}">Register</a> </span>
+    <br />
+    <span class="register-text"
+      >Don't have an account? <a href="{% url 'register_page' %}">Register</a>
+    </span>
     <hr class="divider" />
     <div class="btn-container mt-3">
       <a href="#" class="btn btn-info">Login with Facebook</a>

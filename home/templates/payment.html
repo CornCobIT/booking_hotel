@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block start %}
-<div class="container my-5">
+<div class="container mt-5 pt-5">
   <div class="row search-card-result mt-5 pt-5">
     <div class="col-md-3">
       <img
@@ -42,15 +42,20 @@
     <h5>Book Room</h5>
     {% if user.is_authenticated %}
     <form method="post">
-      {% csrf_token %} {% include "messages.html" %} {{ form.as_p }}
-      <button
-        type="submit"
-        class="btn btn-primary"
-        name="submit_type"
-        value="next"
-      >
-        Next
-      </button>
+      {% csrf_token %} {% include "messages.html" %}
+      <label for="payment_method">Choose Payment Method:</label>
+      <select id="payment_method" name="payment_method">
+        <option value="credit_card">Credit Card</option>
+        <option value="debit_card">Debit Card</option>
+        <option value="paypal">PayPal</option>
+        <option value="cash">Cash</option>
+      </select>
+      <p>Total Price: {{ total_price }}</p>
+      {% if value == "cash" %}
+      <button type="submit" class="btn btn-success" id="submitBtn">Done</button>
+      {% else %}
+      <button type="submit" class="btn btn-primary" id="submitBtn">Next</button>
+      {% endif %}
     </form>
     {% else %}
     <p>
@@ -59,4 +64,20 @@
     {% endif %}
   </div>
 </div>
+<script>
+  document
+    .getElementById("payment_method")
+    .addEventListener("change", function () {
+      var selectedOption = this.value;
+      if (selectedOption == "cash") {
+        document.getElementById("submitBtn").textContent = "Done";
+        document.getElementById("submitBtn").classList.remove("btn-primary");
+        document.getElementById("submitBtn").classList.add("btn-success");
+      } else {
+        document.getElementById("submitBtn").textContent = "Next";
+        document.getElementById("submitBtn").classList.remove("btn-success");
+        document.getElementById("submitBtn").classList.add("btn-primary");
+      }
+    });
+</script>
 {% endblock %}

@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
-from django.utils.safestring import mark_safe
+from .utils import calculate_total_price
 
 import uuid
 
@@ -47,7 +47,7 @@ class Room(BaseModel):
     def __str__(self):
         return f"Room {self.room_name}"
 
-class RoomImages(models.Model):
+class RoomImages(BaseModel):
     room = models.ForeignKey(Room, related_name="images", on_delete=models.SET_NULL, null=True, blank=True)
     images = models.ImageField(upload_to='room_img')
 
@@ -55,7 +55,7 @@ class RoomImages(models.Model):
         return f"Image for {self.room.room_name}"
 
 
-class RoomBooking(models.Model):
+class RoomBooking(BaseModel):
     PAYMENT_METHOD_CHOICES = [
         ('credit_card', 'Credit Card'),
         ('debit_card', 'Debit Card'),
@@ -84,22 +84,14 @@ class RoomBooking(models.Model):
     payment_method = models.CharField(max_length=255, choices=PAYMENT_METHOD_CHOICES, default='cash')
     payment_status = models.CharField(max_length=255, choices=PAYMENT_STATUS_CHOICES, default='pending')
     booking_status = models.CharField(max_length=255, choices=BOOKING_STATUS_CHOICES, default='pending')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
         return f"Booking by {self.user.username} for {self.room.room_name} from {self.check_in_date} to {self.check_out_date}"
-    
-    def calculate_nights(self):
-        return (self.check_out_date - self.check_in_date).days
-
-    def calculate_total_price(self):
-        if self.check_in_date and self.check_out_date and self.room:
-            return self.room.price * self.num_rooms * self.calculate_nights()
-        return 0
 
     def save(self, *args, **kwargs):
-        self.total_price = self.calculate_total_price()
+        self.total_price = calculate_total_price(self.room.price, self.num_rooms, self.check_in_date, self.check_out_date)
         super().save(*args, **kwargs)
-
         
 
 class Review(BaseModel):
@@ -109,12 +101,17 @@ class Review(BaseModel):
     comment = models.TextField()
 
 class UserProfile(BaseModel):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     bio = models.TextField(blank=True, null=True)
-
-    location = models.CharField(max_length=100, blank=True, null=True)
     birth_date = models.DateField(null=True, blank=True)
+    address = models.CharField(max_length=200, blank=True)
+    phone = models.CharField(max_length=20, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True)
+    points = models.IntegerField(default=0)
 
-class FacebookProfile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    facebook_id = models.CharField(max_length=255, blank=True, null=True)
+    @property
+    def fullname(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+
+    def __str__(self):
+        return self.user.username
