@@ -1,6 +1,6 @@
 {%extends 'base.html'%}
 {%block start%}
-<div class="container justify-content-center mb-5">
+<div class="container mb-5">
     <div class="row justify-content-center align-item-center">
         <h1>Hotel Booking</h1>
     </div>
@@ -26,34 +26,15 @@
     </div>
     <div class="row">
         <div class="col-sm">
-            <label>Room Type</label>
+            <label>Number of Guest</label>
             <p>
-                <select class="form-select" aria-label="Default select example">
-                    <option selected>Please Select</option>
-                    {%for room in rooms_objs%}
-                    <option value="{{room.room_name}}">{{room.room_name}}</option>
-                    {%endfor%}
-                </select>
+                <input type="text" name="adult" id="adult" class="form-control">
             </p>
         </div>
         <div class="col-sm">
             <label>Phone Number</label>
             <p>
                 <input type="text" name="phone" id="phone" class="form-control">
-            </p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm">
-            <label>Numbers of Adult</label>
-            <p>
-                <input type="text" name="adult" id="adult" class="form-control">
-            </p>
-        </div>
-        <div class="col-sm">
-            <label>Numbers of Children</label>
-            <p>
-                <input type="text" name="children" id="children" class="form-control">
             </p>
         </div>
     </div>
@@ -75,8 +56,8 @@
         <label>Payment method</label>
         <div class="col-sm">
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                <label class="form-check-label" for="flexRadioDefault2">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                <label class="form-check-label" for="flexRadioDefault1">
                     Cash
                 </label>
             </div>
@@ -91,20 +72,24 @@
         </div>
         <div class="col-sm">
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                <label class="form-check-label" for="flexRadioDefault2">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" checked>
+                <label class="form-check-label" for="flexRadioDefault3">
                     Credit Card
                 </label>
             </div>
         </div>
         <div class="col-sm">
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                <label class="form-check-label" for="flexRadioDefault2">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" checked>
+                <label class="form-check-label" for="flexRadioDefault4">
                     Debit Card
                 </label>
             </div>
         </div>
+    </div>
+    <div class="form-check form-switch">
+        <label class="form-check-label" for="flexSwitchCheckDefault">Do you want to use <strong style="color: orange ">1000</strong> points?</label>
+        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
     </div>
     <div class="row form-group mt-2">
         <div class="col-md-12">

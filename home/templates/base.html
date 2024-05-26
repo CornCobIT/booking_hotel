@@ -518,37 +518,35 @@
             <li class="nav-item">
                 <a class="nav-link" href="{%url 'about_us' %}">About us</a>
             </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">
-                    Rooms
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="{%url 'all_room'%}">All rooms</a>
-                    {%for room in rooms_objs%}
-                    <a class="dropdown-item" href="{%url 'room_detail' room.id%}">{{room.room_name}}</a>
-                    {%endfor%}
-                </div>
+            <li class="nav-item">
+                <a class="nav-link" href="{%url 'all_room' %}">Rooms</a>
             </li>
             {% if user.is_authenticated %} {% if user.is_superuser %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
             </li>
             {% endif %}
-            <li class="nav-item">
-                <a class="nav-link" href="#">Profile</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                   aria-expanded="false">Profile</a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{%url 'logout' %}">Logout</a></li>
+                </ul>
             </li>
             {% else %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'login_page' %}">Login</a>
             </li>
             {% endif %}
+            {%if user.is_authenticated %}
             <li>
                 <a class="btn btn-primary btn-block" href="{%url 'booking'%}" role="button">Booking Now</a>
             </li>
+            {% else %}
+             <li>
+                <a class="btn btn-primary btn-block" href="{%url 'login_page'%}" role="button">Booking Now</a>
+            </li>
+            {% endif %}
         </ul>
     </div>
 </nav>
@@ -572,11 +570,6 @@
                             class="mb-4 mt-0 d-inline-block mx-auto"
                             style="width: 60px; background-color: #7c4dff; height: 2px"
                     />
-                    <p>
-                        Here you can use rows and columns to organize your footer
-                        content. Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit.
-                    </p>
                 </div>
                 <!-- Grid column -->
 
@@ -628,7 +621,7 @@
                             class="mb-4 mt-0 d-inline-block mx-auto"
                             style="width: 60px; background-color: #7c4dff; height: 2px"
                     />
-                    <p><i class="fas fa-home mr-3"></i> New York, NY 10012, US</p>
+                    <p><i class="fas fa-home mr-3"></i>Trường Đại học Công nghệ Thông tin</p>
                     <p><i class="fas fa-envelope mr-3"></i> info@example.com</p>
                     <p><i class="fas fa-phone mr-3"></i> + 01 234 567 88</p>
                     <p><i class="fas fa-print mr-3"></i> + 01 234 567 89</p>

@@ -40,7 +40,7 @@
     "
     >
         <div class="mask" style="background-color: rgba(0, 0, 0, 0.6);">
-            <div class="d-flex justify-content-center align-items-center h-100">
+            <div class="d-flex justify-content-center align-items-center py-5">
                 <div class="text-white">
                     <h1 class="mb-4">The Royal Hotel</h1>
                     <span class=""> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Harum debitis perspiciatis sed iusto
@@ -81,7 +81,7 @@
 
                             <div class="row form-group">
                                 <div class="col-md-12">
-                                    <input type="submit" class="btn btn-primary btn-block" value="Booking Now">
+                                    <input type="submit" class="btn btn-primary btn-block" value="Limit">
                                 </div>
                             </div>
                         </form>
@@ -98,6 +98,8 @@
                                 <label class="" for="exampleFormControlSelect1">Sort by</label>
                                 <select class="form-control" name="sort_by" id="exampleFormControlSelect1">
                                     <option value="">Recommended</option>
+                                    <option {%if sort_by %} selected {%endif%} value='ASC'>ASC</option>
+                                    <option {%if sort_by %} selected {%endif%} value='DSC'>DSC</option>
                                 </select>
                             </div>
                         </div>
@@ -111,8 +113,7 @@
                         <div class="col-md-4">
                             <div class="form-inline">
                                 <label class="" for="exampleFormControlSelect1">Amenities</label>
-                                <select name="amenities" class="form-control" multiple>
-                                    <option value="">Choose</option>
+                                <select name="amenities" class="form-select" multiple>
                                     {% for amenities_obj in amenities_objs %}
                                     <option {% if amenities_obj.amenity_name in amenities %} selected
                                             {%endif%}value="{{amenities_obj.amenity_name}}">
@@ -121,10 +122,9 @@
                                     {% endfor %}
                                 </select>
                             </div>
-
                         </div>
-                        <div class="col-md-4">
 
+                        <div class="col-md-4">
                             <button style="margin-top: 30px;" type="submit" class="btn btn-success">Find</button>
                         </div>
                     </div>
