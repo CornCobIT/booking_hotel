@@ -38,6 +38,17 @@
     </div>
     {% endfor %}
   </div>
+  <div class="row">
+    <h3 class="text-dark">Reviews</h3>
+    {% for review in reviews %}
+    <div class="review">
+        <p><strong>{{ review.user.username }}</strong></p>
+        <p>{{ review.rating }} stars</p>
+        <p>{{ review.comment }}</p>
+    </div>
+{% endfor %}
+
+  </div>
   <div class="filter-card" id="bookingForm">
     <h5>Book Room</h5>
     {% if user.is_authenticated %}

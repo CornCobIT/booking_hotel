@@ -1,12 +1,12 @@
-from django.shortcuts import render , redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate , login, logout as auth_logout
+from django.contrib.auth import authenticate, login, logout as auth_logout
 from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
 from .models import *
 from django.db.models import Q
-from .forms import BookingForm, ProfileForm, UserForm
+from .forms import BookingForm, ProfileForm, UserForm, ReviewForm
 from .utils import calculate_nights, calculate_total_price, calculate_points
 from django.utils import timezone
 from django.urls import reverse
@@ -15,6 +15,7 @@ import re
 
 def handler404(request, exception):
     return render(request, '404.html', status=404)
+
 
 def home(request):
     amenities_objs = Amenities.objects.all()
@@ -46,6 +47,7 @@ def home(request):
     }
     return render(request, 'home.html', context)
 
+
 def calculate_total_price_for_form(form, room_price):
     check_in_date = form.cleaned_data.get('check_in_date')
     check_out_date = form.cleaned_data.get('check_out_date')
@@ -58,9 +60,11 @@ def calculate_total_price_for_form(form, room_price):
 
     return total_price
 
+
 def room_detail(request, id):
     room_obj = get_object_or_404(Room, id=id)
     form = BookingForm(request.POST or None)
+    reviews = Review.objects.filter(room=room_obj)
 
     if request.method == 'POST' and form.is_valid():
         booking = form.save(commit=False)
@@ -93,13 +97,15 @@ def room_detail(request, id):
     context = {
         'room_obj': room_obj,
         'form': form,
+        'reviews': reviews
     }
     return render(request, 'room_detail.html', context)
+
 
 @login_required
 def payment(request, booking_id):
     booking = get_object_or_404(RoomBooking, id=booking_id)
-    total_price = booking.total_price 
+    total_price = booking.total_price
     room_obj = booking.room
 
     if request.method == 'POST':
@@ -119,6 +125,7 @@ def payment(request, booking_id):
     }
     return render(request, 'payment.html', context)
 
+
 @login_required
 def qr_payment(request, booking_id):
     booking = get_object_or_404(RoomBooking, id=booking_id)
@@ -136,22 +143,23 @@ def login_page(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        user_obj = User.objects.filter(username = username)
+        user_obj = User.objects.filter(username=username)
 
         if not user_obj.exists():
             messages.warning(request, 'Account not found ')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-        user_obj = authenticate(username = username , password = password)
+        user_obj = authenticate(username=username, password=password)
         if not user_obj:
             messages.warning(request, 'Invalid password ')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-        login(request , user_obj)
+        login(request, user_obj)
         request.session['user_id'] = user_obj.id
         return redirect('/')
 
-    return render(request ,'login.html')
+    return render(request, 'login.html')
+
 
 def register_page(request):
     if request.method == 'POST':
@@ -171,7 +179,8 @@ def register_page(request):
         # Kiểm tra mật khẩu phức tạp
         password_pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
         if not re.match(password_pattern, password):
-            messages.warning(request, 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.')
+            messages.warning(request,
+                             'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
         # Kiểm tra mật khẩu và xác nhận mật khẩu khớp nhau
@@ -188,12 +197,15 @@ def register_page(request):
 
     return render(request, 'register.html')
 
+
 def logout(request):
     auth_logout(request)
     return redirect('home')
 
+
 def about_us(request):
     return render(request, 'about_us.html')
+
 
 def booking(request):
     rooms_objs = Room.objects.all()
@@ -202,6 +214,7 @@ def booking(request):
     }
     return render(request, 'booking.html', context)
 
+
 def all_room(request):
     rooms_objs = Room.objects.all()
     context = {
@@ -209,10 +222,11 @@ def all_room(request):
     }
     return render(request, 'all_room.html', context)
 
+
 @login_required
 def profile(request):
     user_profile = UserProfile.objects.get(user=request.user)
-    bookings = user_profile.bookings.filter(booking_status='confirmed', payment_status='confirmed')
+    bookings = user_profile.bookings.filter(booking_status='confirmed', payment_status='completed')
 
     total_points = 0
     for booking in bookings:
@@ -228,6 +242,7 @@ def profile(request):
         'total_points': total_points
     }
     return render(request, 'profile.html', context)
+
 
 @login_required
 def edit_profile(request, user_id):
@@ -299,3 +314,32 @@ def cancel_booking(request, user_id, booking_id):
 
     messages.error(request, 'Invalid request method.')
     return redirect('booking_management', user_id=user_id)
+
+
+@login_required
+def create_review(request, booking_id):
+    booking = get_object_or_404(RoomBooking, id=booking_id, user=request.user.profile)
+
+    # Kiểm tra trạng thái booking và payment
+    if booking.booking_status != 'confirmed' or booking.payment_status != 'completed':
+        messages.warning(request, 'You can only leave a review after your booking is confirmed and paid.')
+        return redirect('booking_detail', user_id=booking.user.id, booking_id=booking.id)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.room = booking.room
+            review.user = request.user
+            review.save()
+            messages.success(request, 'Thank you for your review!')
+            return redirect('booking_detail', user_id=booking.user.id, booking_id=booking.id)
+    else:
+        form = ReviewForm()
+
+    context = {
+        'booking': booking,
+        'form': form,
+    }
+    return render(request, 'create_review.html', context)
+

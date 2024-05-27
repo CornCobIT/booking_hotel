@@ -70,6 +70,13 @@
     <div class="row search-card-result">
       <h5>Total Price: {{ total_price }}</h5>
     </div>
+    <div>
+      {% if booking.booking_status == 'confirmed' and booking.payment_status == 'completed' %}
+        <div class="row search-card-result">
+          <a href="{% url 'create_review' booking.id %}">Leave a Review</a>
+        </div>
+      {% endif %}
+    </div>
     <div class="row search-card-result">
       <div class="row">
         <div class="col-lg-6 d-grid">

@@ -6,6 +6,7 @@ from .utils import calculate_total_price, calculate_points
 
 import uuid
 
+
 class BaseModel(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     created_at = models.DateField(default=timezone.now)
@@ -20,7 +21,8 @@ class Amenities(BaseModel):
 
     def __str__(self) -> str:
         return self.amenity_name
-    
+
+
 class UserProfile(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     bio = models.TextField(blank=True, null=True)
@@ -37,14 +39,17 @@ class UserProfile(BaseModel):
     def __str__(self):
         return self.user.username
 
+
 class Hotel(BaseModel):
     hotel_name = models.CharField(max_length=100)
     description = models.TextField()
     address = models.CharField(max_length=200, default='')
     phone_number = models.CharField(max_length=20, default='')
     image = models.ImageField(null=True, blank=True, upload_to='hotel_img')
+
     def __str__(self):
         return self.hotel_name
+
 
 class Room(BaseModel):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, default='')
@@ -63,6 +68,7 @@ class Room(BaseModel):
     def __str__(self):
         return f"Room {self.room_name}"
 
+
 class RoomImages(BaseModel):
     room = models.ForeignKey(Room, related_name="images", on_delete=models.SET_NULL, null=True, blank=True)
     images = models.ImageField(upload_to='room_img')
@@ -78,19 +84,19 @@ class RoomBooking(BaseModel):
         ('paypal', 'PayPal'),
         ('cash', 'Cash'),
     ]
-    
+
     PAYMENT_STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('completed', 'Completed'),
         ('failed', 'Failed'),
     ]
-    
+
     BOOKING_STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('confirmed', 'Confirmed'),
         ('cancelled', 'Cancelled'),
     ]
-    
+
     room = models.ForeignKey(Room, related_name="room_bookings", on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, related_name="bookings", on_delete=models.CASCADE)
     check_in_date = models.DateField()
@@ -106,12 +112,16 @@ class RoomBooking(BaseModel):
         return f"Booking by {self.user.user.username} for {self.room.room_name} from {self.check_in_date} to {self.check_out_date}"
 
     def save(self, *args, **kwargs):
-        self.total_price = calculate_total_price(self.room.price, self.num_rooms, self.check_in_date, self.check_out_date)
+        self.total_price = calculate_total_price(self.room.price, self.num_rooms, self.check_in_date,
+                                                 self.check_out_date)
         super().save(*args, **kwargs)
-        
+
 
 class Review(BaseModel):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews')
     rating = models.IntegerField()
     comment = models.TextField()
+
+    def __str__(self):
+        return f"Review for {self.room.room_name}"
