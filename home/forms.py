@@ -1,5 +1,5 @@
 from django import forms
-from .models import RoomBooking
+from .models import RoomBooking, UserProfile, User
 from datetime import datetime, timedelta
 
 class BookingForm(forms.ModelForm):
@@ -16,3 +16,14 @@ class BookingForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['check_in_date'].initial = datetime.now().date()
         self.fields['check_out_date'].initial = (datetime.now() + timedelta(days=2)).date()
+        
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['address', 'phone', 'avatar']
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']

@@ -1,0 +1,84 @@
+{% extends "base.html" %} {% block start %}
+<section class="container mt-5 pt-5">
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        id="personal-tab"
+        data-toggle="tab"
+        href="{% url 'profile' %}"
+        >Profile</a
+      >
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link active"
+        id="booking-tab"
+        data-toggle="tab"
+        href="{% url 'booking_management' profile.id %}"
+        >Booking Managemet</a
+      >
+    </li>
+  </ul>
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+    <div
+      class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}"
+    >
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <div class="booking-history">
+    <h1>{{ user.profile.fullname }}'s Bookings</h1>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Room</th>
+          <th>Check-in Date</th>
+          <th>Check-out Date</th>
+          <th>Total Price</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for booking in bookings %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>
+            <a href="{% url 'room_detail' booking.room.id %}"
+              >{{ booking.room.room_name }}</a
+            >
+          </td>
+          <td>{{ booking.check_in_date }}</td>
+          <td>{{ booking.check_out_date }}</td>
+          <td>{{ booking.total_price }}</td>
+          <td>{{ booking.booking_status }}</td>
+          <td>
+            <a
+              href="{% url 'booking_detail' profile.id booking.id %}"
+              class="btn btn-primary"
+              >View detail</a
+            >
+            {% if booking.booking_status == 'pending' %}
+            <form
+              action="{% url 'cancel_booking' profile.id booking.id %}"
+              method="post"
+              class="col-lg-6"
+            >
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">Cancel</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

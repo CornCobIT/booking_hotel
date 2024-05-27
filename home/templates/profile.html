@@ -1,3 +1,61 @@
-{%extends 'base.html'%} {%block start%}
+{% extends 'base.html' %} {% block start %} {% load static %}
+<section class="container">
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <a
+        class="nav-link active"
+        id="personal-tab"
+        data-toggle="tab"
+        href="{% url 'profile' %}"
+        >Profile</a
+      >
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        id="booking-tab"
+        data-toggle="tab"
+        href="{% url 'booking_management' profile.id %}"
+        >Booking Managemet</a
+      >
+    </li>
+  </ul>
 
-{%endblock%}
+  <div class="tab-content">
+    <div
+      class="tab-pane fade show active"
+      id="personal"
+      role="tabpanel"
+      aria-labelledby="personal-tab"
+    >
+      <div class="mb-5 pb-5">
+        <h1>Profile for {{ profile.username }}</h1>
+        {% if profile.avatar %}
+        <img
+          src="{{ profile.avatar.url }}"
+          alt="Avatar"
+          class="img-thumbnail rounded-circle"
+          style="width: 200px; height: 200px"
+        />
+        {% else %}
+        <img
+          src="{% static 'avt-default.jpg' %}"
+          alt="Avatar"
+          class="img-thumbnail rounded-circle"
+          style="width: 200px; height: 200px"
+        />
+        {% endif %}
+        <p>Full Name: {{ profile.fullname }}</p>
+        <p>Email: {{ user_email }}</p>
+        <p>Address: {{ profile.address }}</p>
+        <p>Phone: {{ profile.phone }}</p>
+        <p>Points: {{ profile.points }}</p>
+
+        <a href="{% url 'edit_profile' profile.id %}" class="btn btn-success"
+          >Edit</a
+        >
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

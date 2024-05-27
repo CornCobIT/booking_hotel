@@ -18,7 +18,7 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = ['username', 'fullname', 'email', 'phone', 'points']
 
     def username(self, obj):
-        return obj.user.username
+        return obj.user.username if obj.user else None
     username.short_description = 'Username'
 
     def fullname(self, obj):
@@ -26,7 +26,7 @@ class ProfileAdmin(admin.ModelAdmin):
     fullname.short_description = 'Full Name'
 
     def email(self, obj):
-        return obj.user.email
+        return obj.user.email if obj.user else None
     
 admin.site.register(Amenities)
 admin.site.register(Room, RoomAdmin)

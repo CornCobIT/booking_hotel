@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
-from .utils import calculate_total_price
+from .utils import calculate_total_price, calculate_points
 
 import uuid
 
@@ -20,6 +20,22 @@ class Amenities(BaseModel):
 
     def __str__(self) -> str:
         return self.amenity_name
+    
+class UserProfile(BaseModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    bio = models.TextField(blank=True, null=True)
+    birth_date = models.DateField(null=True, blank=True)
+    address = models.CharField(max_length=200, blank=True)
+    phone = models.CharField(max_length=20, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True)
+    points = models.IntegerField(default=0)
+
+    @property
+    def fullname(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+
+    def __str__(self):
+        return self.user.username
 
 class Hotel(BaseModel):
     hotel_name = models.CharField(max_length=100)
@@ -76,7 +92,7 @@ class RoomBooking(BaseModel):
     ]
     
     room = models.ForeignKey(Room, related_name="room_bookings", on_delete=models.CASCADE)
-    user = models.ForeignKey(User, related_name="user_bookings", on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, related_name="bookings", on_delete=models.CASCADE)
     check_in_date = models.DateField()
     check_out_date = models.DateField()
     guests = models.IntegerField(default=1)
@@ -87,7 +103,7 @@ class RoomBooking(BaseModel):
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
-        return f"Booking by {self.user.username} for {self.room.room_name} from {self.check_in_date} to {self.check_out_date}"
+        return f"Booking by {self.user.user.username} for {self.room.room_name} from {self.check_in_date} to {self.check_out_date}"
 
     def save(self, *args, **kwargs):
         self.total_price = calculate_total_price(self.room.price, self.num_rooms, self.check_in_date, self.check_out_date)
@@ -99,19 +115,3 @@ class Review(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews')
     rating = models.IntegerField()
     comment = models.TextField()
-
-class UserProfile(BaseModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    bio = models.TextField(blank=True, null=True)
-    birth_date = models.DateField(null=True, blank=True)
-    address = models.CharField(max_length=200, blank=True)
-    phone = models.CharField(max_length=20, blank=True)
-    avatar = models.ImageField(upload_to='avatars/', blank=True)
-    points = models.IntegerField(default=0)
-
-    @property
-    def fullname(self):
-        return f"{self.user.first_name} {self.user.last_name}"
-
-    def __str__(self):
-        return self.user.username

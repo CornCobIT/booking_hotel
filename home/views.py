@@ -6,10 +6,15 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
 from .models import *
 from django.db.models import Q
-from .forms import BookingForm
+from .forms import BookingForm, ProfileForm, UserForm
 from .utils import calculate_nights, calculate_total_price, calculate_points
 from django.utils import timezone
+from django.urls import reverse
+import re
 
+
+def handler404(request, exception):
+    return render(request, '404.html', status=404)
 
 def home(request):
     amenities_objs = Amenities.objects.all()
@@ -74,12 +79,13 @@ def room_detail(request, id):
         elif booking.num_rooms <= 0:
             messages.warning(request, 'Number of rooms must be greater than 0.')
         else:
-            booking.user = request.user
+            user_profile = UserProfile.objects.get(user=request.user)
+            booking.user = user_profile
             if submit_type == 'next':
                 booking.save()
+                return redirect('payment', booking_id=booking.id)
             else:
                 return redirect('home')
-            return redirect('payment', booking_id=booking.id)
 
     elif form.errors:
         messages.error(request, 'Failed to save booking. Please check your input.')
@@ -154,23 +160,27 @@ def register_page(request):
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
 
+        # Kiểm tra username và email đã tồn tại hay chưa
         if User.objects.filter(username=username).exists():
             messages.warning(request, 'Account with this username already exists')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
         if User.objects.filter(email=email).exists():
             messages.warning(request, 'Account with this email already exists')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+        # Kiểm tra mật khẩu phức tạp
+        password_pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
+        if not re.match(password_pattern, password):
+            messages.warning(request, 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+        # Kiểm tra mật khẩu và xác nhận mật khẩu khớp nhau
         if password != confirm_password:
             messages.warning(request, 'Passwords do not match')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-        user = User.objects.create(username=username)
-        user.set_password(password)
-        user.email = email
-        user.save()
-
+        # Tạo user mới và băm mật khẩu
+        user = User.objects.create_user(username=username, email=email, password=password)
         UserProfile.objects.create(user=user)
 
         messages.success(request, 'Account created successfully. Please log in.')
@@ -202,8 +212,90 @@ def all_room(request):
 @login_required
 def profile(request):
     user_profile = UserProfile.objects.get(user=request.user)
+    bookings = user_profile.bookings.filter(booking_status='confirmed', payment_status='confirmed')
+
+    total_points = 0
+    for booking in bookings:
+        points = calculate_points(booking.total_price)
+        total_points += points
+
+    user_profile.points += total_points
+    user_profile.save()
+
     context = {
         'profile': user_profile,
+        'user_email': request.user.email,
+        'total_points': total_points
     }
     return render(request, 'profile.html', context)
 
+@login_required
+def edit_profile(request, user_id):
+    user = get_object_or_404(UserProfile, id=user_id).user
+    profile = UserProfile.objects.get(user=user)
+
+    if request.method == 'POST':
+        profile_form = ProfileForm(request.POST, request.FILES, instance=profile)
+        user_form = UserForm(request.POST, instance=user)
+        if profile_form.is_valid() and user_form.is_valid():
+            profile_instance = profile_form.save(commit=False)
+            user_instance = user_form.save(commit=False)
+            profile_instance.save()
+            user_instance.save()
+
+            return redirect('profile')
+    else:
+        profile_form = ProfileForm(instance=profile)
+        user_form = UserForm(instance=user)
+
+    return render(request, 'edit_profile.html', {'profile_form': profile_form, 'user_form': user_form})
+
+
+@login_required
+def booking_management(request, user_id):
+    profile = get_object_or_404(UserProfile, id=user_id)
+    bookings = RoomBooking.objects.filter(user=profile)
+    context = {
+        'profile': profile,
+        'bookings': bookings,
+    }
+    return render(request, 'booking_management.html', context)
+
+
+def booking_detail(request, user_id, booking_id):
+    profile = get_object_or_404(UserProfile, id=user_id)
+    booking = get_object_or_404(RoomBooking, id=booking_id, user=profile)
+    total_price = calculate_total_price(
+        booking.room.price,
+        booking.num_rooms,
+        booking.check_in_date,
+        booking.check_out_date
+    )
+    nights = calculate_nights(booking.check_in_date, booking.check_out_date)
+    points = calculate_points(total_price)
+    context = {
+        'profile': profile,
+        'booking': booking,
+        'total_price': total_price,
+        'nights': nights,
+        'points': points,
+    }
+    return render(request, 'booking_detail.html', context)
+
+
+@login_required
+def cancel_booking(request, user_id, booking_id):
+    profile = get_object_or_404(UserProfile, id=user_id)
+    booking = get_object_or_404(RoomBooking, id=booking_id, user=profile)
+
+    if request.method == "POST":
+        if booking.booking_status == 'pending':
+            booking.booking_status = 'cancelled'
+            booking.save()
+            messages.success(request, 'Your booking has been successfully cancelled.')
+        else:
+            messages.error(request, 'Booking cancellation failed.')
+        return redirect('booking_management', user_id=user_id)
+
+    messages.error(request, 'Invalid request method.')
+    return redirect('booking_management', user_id=user_id)
