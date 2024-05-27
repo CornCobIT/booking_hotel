@@ -51,7 +51,7 @@
   </div>
   <div class="filter-card" id="bookingForm">
     <h5>Book Room</h5>
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and room_obj.room_count > 0 %}
     <form method="post">
       {% csrf_token %} {% include "messages.html" %} {{ form.as_p }}
       <button
@@ -63,6 +63,8 @@
         Next
       </button>
     </form>
+    {% elif room_obj.room_count == 0 %}
+      <p><strong>OUT OF ROOM. PLEASE BOOKING OTHER ROOM!</strong></p>
     {% else %}
     <p>
       You need to <a href="{% url 'login_page' %}">login</a> to book a room.

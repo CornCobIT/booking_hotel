@@ -52,9 +52,9 @@
       </select>
       <p>Total Price: {{ total_price }}</p>
       {% if value == "cash" %}
-      <button type="submit" class="btn btn-success" id="submitBtn">Done</button>
+      <button type="submit" class="btn btn-success" id="submitBtn" name="submit_type" value="done">Done</button>
       {% else %}
-      <button type="submit" class="btn btn-primary" id="submitBtn">Next</button>
+      <button type="submit" class="btn btn-primary" id="submitBtn" name="submit_type" value="next">Next</button>
       {% endif %}
     </form>
     {% else %}

@@ -82,6 +82,10 @@ def room_detail(request, id):
             messages.warning(request, 'Number of guests must be greater than 0.')
         elif booking.num_rooms <= 0:
             messages.warning(request, 'Number of rooms must be greater than 0.')
+        elif booking.num_rooms > room_obj.room_count:
+            messages.warning(request, f'This room is {room_obj.room_count}. Please booking again!')
+        elif booking.room.room_count <= 0:
+            messages.warning(request, 'Out of room. Please booking other room!')
         else:
             user_profile = UserProfile.objects.get(user=request.user)
             booking.user = user_profile
@@ -111,9 +115,14 @@ def payment(request, booking_id):
     if request.method == 'POST':
         payment_method = request.POST.get('payment_method')
         submit_type = request.POST.get('submit_type')
+        print("type", submit_type)
         booking.payment_method = payment_method
         if submit_type == 'next' or submit_type == 'done':
+            room_obj.room_count -= booking.num_rooms
+            print("còn lại", room_obj.room_count)
+            room_obj.save()
             booking.save()
+
         if payment_method in ['paypal', 'credit_card', 'debit_card']:
             return redirect('qr_payment', booking_id=booking.id)
         return redirect('home')
@@ -168,7 +177,6 @@ def register_page(request):
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
 
-        # Kiểm tra username và email đã tồn tại hay chưa
         if User.objects.filter(username=username).exists():
             messages.warning(request, 'Account with this username already exists')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
@@ -176,19 +184,16 @@ def register_page(request):
             messages.warning(request, 'Account with this email already exists')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-        # Kiểm tra mật khẩu phức tạp
         password_pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
         if not re.match(password_pattern, password):
             messages.warning(request,
                              'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-        # Kiểm tra mật khẩu và xác nhận mật khẩu khớp nhau
         if password != confirm_password:
             messages.warning(request, 'Passwords do not match')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-        # Tạo user mới và băm mật khẩu
         user = User.objects.create_user(username=username, email=email, password=password)
         UserProfile.objects.create(user=user)
 
