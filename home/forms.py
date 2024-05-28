@@ -2,7 +2,6 @@ from django import forms
 from .models import RoomBooking, UserProfile, User, Review
 from datetime import datetime, timedelta
 
-
 class BookingForm(forms.ModelForm):
     class Meta:
         model = RoomBooking
@@ -10,6 +9,12 @@ class BookingForm(forms.ModelForm):
         widgets = {
             'check_in_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'check_out_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }
+        labels = {
+            'check_in_date': 'Ngày nhận phòng',
+            'check_out_date': 'Ngày trả phòng',
+            'guests': 'Số khách',
+            'num_rooms': 'Số phòng'
         }
 
     def __init__(self, *args, **kwargs):
@@ -22,12 +27,22 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['address', 'phone', 'avatar']
+        labels = {
+            'address': 'Địa chỉ',
+            'phone': 'Số điện thoại',
+            'avatar': 'Ảnh đại diện'
+        }
 
 
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
+        labels = {
+            'first_name': 'Tên',
+            'last_name': 'Họ',
+            'email': 'Email'
+        }
 
 
 class ReviewForm(forms.ModelForm):
@@ -36,3 +51,7 @@ class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ['rating', 'comment']
+        labels = {
+            'rating': 'Đánh giá',
+            'comment': 'Bình luận'
+        }

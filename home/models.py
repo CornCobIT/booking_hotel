@@ -59,14 +59,14 @@ class Room(BaseModel):
     amenities = models.ManyToManyField(Amenities)
     capacity = models.IntegerField(default=2)
     ROOM_VALUE = (
-        ('1', 'Still'),
-        ('0', 'Out of room'),
+        ('1', 'Còn'),
+        ('0', 'Hết phòng'),
     )
     room_status = models.CharField(choices=ROOM_VALUE, default='1', max_length=10)
     room_count = models.IntegerField(default=1)
 
     def __str__(self):
-        return f"Room {self.room_name}"
+        return f"Phòng {self.room_name}"
 
 
 class RoomImages(BaseModel):
@@ -74,27 +74,27 @@ class RoomImages(BaseModel):
     images = models.ImageField(upload_to='room_img')
 
     def __str__(self):
-        return f"Image for {self.room.room_name}"
+        return f"Ảnh cho {self.room.room_name}"
 
 
 class RoomBooking(BaseModel):
     PAYMENT_METHOD_CHOICES = [
-        ('credit_card', 'Credit Card'),
-        ('debit_card', 'Debit Card'),
-        ('paypal', 'PayPal'),
-        ('cash', 'Cash'),
+        ('credit_card', 'Thanh toán bằng thẻ Credit'),
+        ('debit_card', 'Thanh toán bằng Debit'),
+        ('paypal', 'Thanh toán bằng PayPal'),
+        ('cash', 'Thanh toán khi trả phòng'),
     ]
 
     PAYMENT_STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('completed', 'Completed'),
-        ('failed', 'Failed'),
+        ('pending', 'Đang xử lý'),
+        ('completed', 'Thành công'),
+        ('failed', 'Thất bại'),
     ]
 
     BOOKING_STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('confirmed', 'Confirmed'),
-        ('cancelled', 'Cancelled'),
+        ('pending', 'Đang xử lý'),
+        ('confirmed', 'Thành công'),
+        ('cancelled', 'Hủy'),
     ]
 
     room = models.ForeignKey(Room, related_name="room_bookings", on_delete=models.CASCADE)
@@ -109,7 +109,7 @@ class RoomBooking(BaseModel):
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
-        return f"Booking by {self.user.user.username} for {self.room.room_name} from {self.check_in_date} to {self.check_out_date}"
+        return f"Đặt phòng bởi {self.user.user.username} cho {self.room.room_name} từ ngày {self.check_in_date} đến ngày {self.check_out_date}"
 
     def save(self, *args, **kwargs):
         self.total_price = calculate_total_price(self.room.price, self.num_rooms, self.check_in_date,
@@ -124,4 +124,4 @@ class Review(BaseModel):
     comment = models.TextField()
 
     def __str__(self):
-        return f"Review for {self.room.room_name}"
+        return f"Nhận xét cho {self.room.room_name}"

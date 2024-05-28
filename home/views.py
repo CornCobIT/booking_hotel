@@ -8,7 +8,6 @@ from django.db.models import Q
 from .forms import BookingForm, ProfileForm, UserForm, ReviewForm
 from .utils import calculate_nights, calculate_total_price, calculate_points
 from django.utils import timezone
-from django.db.models import Sum
 import re
 
 
@@ -35,8 +34,8 @@ def home(request):
     if amenities:
         rooms_objs = rooms_objs.filter(amenities__amenity_name__in=amenities).distinct()
 
-    if 'booking_success' in request.session:
-        messages.success(request, request.session.pop('booking_success'))
+    # if 'booking_success' in request.session:
+    #     messages.success(request, request.session.pop('booking_success'))
     context = {
         'amenities_objs': amenities_objs,
         'rooms_objs': rooms_objs,
@@ -72,19 +71,19 @@ def room_detail(request, id):
         today = timezone.now().date()
 
         if booking.guests > room_obj.capacity * booking.num_rooms:
-            messages.warning(request, 'The number of guests error.')
+            messages.warning(request, 'Lỗi số lượng khách hàng.')
         elif booking.check_out_date <= booking.check_in_date:
-            messages.warning(request, 'Check-out date must be after check-in date.')
+            messages.warning(request, 'Ngày trả phòng phải sau ngày nhận phòng.')
         elif booking.check_in_date < today:
-            messages.warning(request, 'Check-in date cannot be in the past.')
+            messages.warning(request, 'Ngày nhận phòng không thể trước hôm nay.')
         elif booking.guests <= 0:
-            messages.warning(request, 'Number of guests must be greater than 0.')
+            messages.warning(request, 'Số lượng khách ít nhất phải có 1 người.')
         elif booking.num_rooms <= 0:
-            messages.warning(request, 'Number of rooms must be greater than 0.')
+            messages.warning(request, 'Số lượng phòng phải lớn hơn 0.')
         elif booking.num_rooms > room_obj.room_count:
-            messages.warning(request, f'This room is {room_obj.room_count}. Please booking again!')
+            messages.warning(request, f'Số lượng phòng còn {room_obj.room_count} phòng. Vui lòng chọn lại số lượng phòng!')
         elif booking.room.room_count <= 0:
-            messages.warning(request, 'Out of room. Please booking other room!')
+            messages.warning(request, 'Hết phòng. Vui lòng đặt phòng khác!')
         else:
             user_profile = UserProfile.objects.get(user=request.user)
             booking.user = user_profile
@@ -95,7 +94,7 @@ def room_detail(request, id):
                 return redirect('home')
 
     elif form.errors:
-        messages.error(request, 'Failed to save booking. Please check your input.')
+        messages.error(request, 'Lỗi. Vui lòng kiểm tra các trường nhập vào!')
 
     context = {
         'room_obj': room_obj,
@@ -129,6 +128,8 @@ def payment(request, booking_id):
 
         if submit_type in ['next', 'done']:
             room_obj.room_count -= booking.num_rooms
+            if room_obj.room_count == 0:
+                room_obj.room_status == '0'
             room_obj.save()
             booking.save()
 
@@ -162,12 +163,12 @@ def login_page(request):
         user_obj = User.objects.filter(username=username)
 
         if not user_obj.exists():
-            messages.warning(request, 'Account not found ')
+            messages.warning(request, 'Không tìm thấy tài khoản.')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
         user_obj = authenticate(username=username, password=password)
         if not user_obj:
-            messages.warning(request, 'Invalid password ')
+            messages.warning(request, 'Mật khẩu không đúng. Vui lòng nhập lại!')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
         login(request, user_obj)
@@ -185,26 +186,26 @@ def register_page(request):
         confirm_password = request.POST.get('confirm_password')
 
         if User.objects.filter(username=username).exists():
-            messages.warning(request, 'Account with this username already exists')
+            messages.warning(request, 'Tên đăng nhập này đã tồn tại. Vui lòng chọn tên khác!')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         if User.objects.filter(email=email).exists():
-            messages.warning(request, 'Account with this email already exists')
+            messages.warning(request, 'Email này đã được đăng ký. Vui lòng nhập email khác!')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
         password_pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
         if not re.match(password_pattern, password):
             messages.warning(request,
-                             'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.')
+                             'Mật khẩu phải có ít nhất 8 ký tự, chứa ít nhất 1 ký tự viết hoa, 1 ký tự viết thường, 1 chữ số và 1 ký tự đặc biệt.')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
         if password != confirm_password:
-            messages.warning(request, 'Passwords do not match')
+            messages.warning(request, 'Mật khẩu không khớp. Vui lòng nhập lại!')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
         user = User.objects.create_user(username=username, email=email, password=password)
         UserProfile.objects.create(user=user)
 
-        messages.success(request, 'Account created successfully. Please log in.')
+        messages.success(request, 'Tạo tài khoản thành công. Bạn có thể đăng nhập!')
         return redirect('login_page')
 
     return render(request, 'register.html')
@@ -318,9 +319,9 @@ def cancel_booking(request, user_id, booking_id):
         if booking.booking_status == 'pending':
             booking.booking_status = 'cancelled'
             booking.save()
-            messages.success(request, 'Your booking has been successfully cancelled.')
+            messages.success(request, 'Đã hủy đơn đặt phòng!')
         else:
-            messages.error(request, 'Booking cancellation failed.')
+            messages.error(request, 'Lỗi. Không thể hủy đơn đặt phòng!')
         return redirect('booking_management', user_id=user_id)
 
     messages.error(request, 'Invalid request method.')
@@ -332,7 +333,7 @@ def create_review(request, booking_id):
     booking = get_object_or_404(RoomBooking, id=booking_id, user=request.user.profile)
 
     if booking.booking_status != 'confirmed' or booking.payment_status != 'completed':
-        messages.warning(request, 'You can only leave a review after your booking is confirmed and paid.')
+        messages.warning(request, 'Bạn chỉ có thể bình luận khi đã đặt phòng và thanh toán thành công.')
         return redirect('booking_detail', user_id=booking.user.id, booking_id=booking.id)
 
     if request.method == 'POST':
@@ -342,7 +343,7 @@ def create_review(request, booking_id):
             review.room = booking.room
             review.user = request.user
             review.save()
-            messages.success(request, 'Thank you for your review!')
+            messages.success(request, 'Cảm ơn bạn đã nhận xét! ❤️')
             return redirect('booking_detail', user_id=booking.user.id, booking_id=booking.id)
     else:
         form = ReviewForm()

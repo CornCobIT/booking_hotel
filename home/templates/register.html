@@ -5,7 +5,7 @@
     {% csrf_token %} {% include "messages.html" %}
 
     <div class="mb-3">
-      <label for="username" class="form-label">Username</label>
+      <label for="username" class="form-label">Tên đăng nhập</label>
       <input
         type="text"
         name="username"
@@ -29,7 +29,7 @@
     </div>
 
     <div class="mb-3">
-      <label for="password" class="form-label">Password</label>
+      <label for="password" class="form-label">Mật khẩu</label>
       <input
         type="password"
         name="password"
@@ -40,7 +40,7 @@
     </div>
 
     <div class="mb-3">
-      <label for="confirm_password" class="form-label">Confirm Password</label>
+      <label for="confirm_password" class="form-label">Xác nhận mật khẩu</label>
       <input
         type="password"
         name="confirm_password"
@@ -50,14 +50,14 @@
       />
     </div>
 
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Đăng ký</button>
     <br />
     <span class="register-text"
-      >Do you have an account? <a href="{% url 'login_page' %}">Login</a></span
+      >Bạn đã có tài khoản? <a href="{% url 'login_page' %}">Đăng nhập</a></span
     >
     <hr class="divider" />
     <div class="btn-container mt-3">
-      <a href="#" class="btn btn-info">Login with Facebook</a>
+      <a href="#" class="btn btn-info">Đăng nhập với Facebook</a>
     </div>
   </form>
 </div>

@@ -7,7 +7,7 @@
         id="personal-tab"
         data-toggle="tab"
         href="{% url 'profile' %}"
-        >Profile</a
+        >Trang cá nhân</a
       >
     </li>
     <li class="nav-item">
@@ -16,7 +16,7 @@
         id="booking-tab"
         data-toggle="tab"
         href="{% url 'booking_management' profile.id %}"
-        >Booking Managemet</a
+        >Quản lý đặt phòng</a
       >
     </li>
   </ul>
@@ -29,7 +29,7 @@
       aria-labelledby="personal-tab"
     >
       <div class="mb-5 pb-5">
-        <h1>Profile for {{ profile.user.username }}</h1>
+        <h1>Trang các nhân của {{ profile.user.username }}</h1>
         {% if profile.avatar %}
         <img
           src="{{ profile.avatar.url }}"
@@ -45,14 +45,14 @@
           style="width: 200px; height: 200px"
         />
         {% endif %}
-        <p>Full Name: {{ profile.fullname }}</p>
+        <p>Họ và tên: {{ profile.fullname }}</p>
         <p>Email: {{ user_email }}</p>
-        <p>Address: {{ profile.address }}</p>
-        <p>Phone: {{ profile.phone }}</p>
-        <p>Points: {{ profile.points }}</p>
+        <p>Địa chỉ: {{ profile.address }}</p>
+        <p>Số điện thoại: {{ profile.phone }}</p>
+        <p>Điểm: {{ profile.points }}</p>
 
         <a href="{% url 'edit_profile' profile.id %}" class="btn btn-success"
-          >Edit</a
+          >Chỉnh sửa</a
         >
       </div>
     </div>

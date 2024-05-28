@@ -5,7 +5,7 @@
       <img
         class="img-fluid"
         src="{{ room_obj.images.first.images.url }}"
-        alt="Card image cap"
+        alt="Ảnh của phòng {{ room_obj.room_name }}"
       />
     </div>
     <div class="col-md-5">
@@ -17,12 +17,9 @@
       </p>
     </div>
     <div class="col-md-2 border-left text-center more-offers">
-      <p><strong>{{ room_obj.price }}</strong> VND / 1 night</p>
-      <p>
-        Capacity: {% if room_obj.capacity <= 1 %}{{ room_obj.capacity }} person
-        {% else %}{{ room_obj.capacity }} people {% endif %}
-      </p>
-      <p>Room count</p>
+      <p><strong>{{ room_obj.price }}</strong> VND / 1 đêm</p>
+      <p>Sức chứa: {{ room_obj.capacity }} người</p>
+      <p>Số lượng phòng:</p>
       <p>{{ room_obj.room_count }}</p>
     </div>
   </div>
@@ -39,18 +36,17 @@
     {% endfor %}
   </div>
   <div class="row">
-    <h3 class="text-dark">Reviews</h3>
+    <h3 class="text-dark">Nhận xét</h3>
     {% for review in reviews %}
     <div class="review">
-        <p><strong>{{ review.user.username }}</strong></p>
-        <p>{{ review.rating }} stars</p>
-        <p>{{ review.comment }}</p>
+      <p><strong>{{ review.user.username }}</strong></p>
+      <p>{{ review.rating }} sao</p>
+      <p>{{ review.comment }}</p>
     </div>
-{% endfor %}
-
+    {% endfor %}
   </div>
   <div class="filter-card" id="bookingForm">
-    <h5>Book Room</h5>
+    <h5>Đặt Phòng</h5>
     {% if user.is_authenticated and room_obj.room_count > 0 %}
     <form method="post">
       {% csrf_token %} {% include "messages.html" %} {{ form.as_p }}
@@ -60,14 +56,14 @@
         name="submit_type"
         value="next"
       >
-        Next
+        Tiếp theo
       </button>
     </form>
     {% elif room_obj.room_count == 0 %}
-      <p><strong>OUT OF ROOM. PLEASE BOOKING OTHER ROOM!</strong></p>
+    <p><strong>HẾT PHÒNG. VUI LÒNG ĐẶT PHÒNG KHÁC!</strong></p>
     {% else %}
     <p>
-      You need to <a href="{% url 'login_page' %}">login</a> to book a room.
+      Bạn cần phải <a href="{% url 'login_page' %}">ĐĂNG NHẬP</a> để đặt phòng.
     </p>
     {% endif %}
   </div>
