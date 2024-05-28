@@ -79,10 +79,10 @@ class RoomImages(BaseModel):
 
 class RoomBooking(BaseModel):
     PAYMENT_METHOD_CHOICES = [
-        ('credit_card', 'Thanh toán bằng thẻ Credit'),
-        ('debit_card', 'Thanh toán bằng Debit'),
-        ('paypal', 'Thanh toán bằng PayPal'),
-        ('cash', 'Thanh toán khi trả phòng'),
+        ('credit_card', 'Thẻ Credit'),
+        ('debit_card', 'Thẻ Debit'),
+        ('paypal', 'Chuyển khoản'),
+        ('cash', 'Tiền mặt'),
     ]
 
     PAYMENT_STATUS_CHOICES = [

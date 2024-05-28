@@ -15,12 +15,12 @@
       </p>
     </div>
     <div class="col-md-2 border-left text-center more-offers">
-      <p><strong>{{ room_obj.price }}</strong> VND / 1 night</p>
+      <p><strong>{{ room_obj.price }}</strong> VND / 1 đêm</p>
       <p>
-        Capacity: {% if room_obj.capacity <= 1 %}{{ room_obj.capacity }} person
+        Số người: {% if room_obj.capacity <= 1 %}{{ room_obj.capacity }} person
         {% else %}{{ room_obj.capacity }} people {% endif %}
       </p>
-      <p>Room count</p>
+      <p>Số lượng phòng</p>
       <p>{{ room_obj.room_count }}</p>
     </div>
   </div>
@@ -32,27 +32,27 @@
     {% endfor %}
   </div>
   <div class="filter-card" id="bookingForm">
-    <h5>Book Room</h5>
+    <h5>Đặt phòng</h5>
     {% if user.is_authenticated %}
     <form method="post">
       {% csrf_token %}
       {% include "messages.html" %}
-      <label for="payment_method">Choose Payment Method:</label>
+      <label for="payment_method">Chọn hình thức thanh toán:</label>
       <select id="payment_method" name="payment_method">
-          <option value="credit_card">Credit Card</option>
-          <option value="debit_card">Debit Card</option>
-          <option value="paypal">PayPal</option>
-          <option value="cash">Cash</option>
+          <option value="credit_card">Thẻ credit</option>
+          <option value="debit_card">Thẻ debit</option>
+          <option value="paypal">Chuyển khoản</option>
+          <option value="cash">Tiền mặt</option>
       </select>
-      <p>Total Price: <span id="total-price">{{ total_price }}</span> VND</p>
+      <p>Tổng tiền: <span id="total-price">{{ total_price }}</span> VND</p>
           <div class="form-group d-flex align-items-center">
               <input type="checkbox" id="use-points" name="use_points" value="yes" class="mr-3">
-              <p class="mb-0">Use points: {{ booking.user.points }}</p>
+              <p class="mb-0">Sử dụng điểm: {{ booking.user.points }}</p>
           </div>
-      <button type="submit" class="btn btn-primary" id="submitBtn" name="submit_type" value="next">Next</button>
+      <button type="submit" class="btn btn-primary" id="submitBtn" name="submit_type" value="next">Tiếp</button>
     </form>
     {% else %}
-    <p>You need to <a href="{% url 'login_page' %}">login</a> to book a room.</p>
+    <p>Bạn cần <a href="{% url 'login_page' %}">đăng nhập</a> để đặt phòng.</p>
     {% endif %}
   </div>
 </div>

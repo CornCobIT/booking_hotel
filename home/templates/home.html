@@ -42,10 +42,11 @@
         <div class="mask" style="background-color: rgba(0, 0, 0, 0.6);">
             <div class="d-flex justify-content-center align-items-center py-5">
                 <div class="text-white">
-                    <h1 class="mb-4">The Royal Hotel</h1>
-                    <span class=""> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Harum debitis perspiciatis sed iusto
-                        eveniet neque natus quidem velit optio cumque saepe repudiandae vero, sit hic adipisci laudantium libero blanditiis
-                        animi.
+                    <h1 class="mb-4">Khách sạn Hoàng Gia</h1>
+                    <span class=""> Khách sạn Hoàng Gia với các phòng biệt thự và bungalow được trang bị đầy đủ tiện nghi, không gian bên
+                        trong được bài trí theo phong cách sang trọng pha trộn những nét truyền thống của người Việt và
+                        những nét hiện đại của phương Tây. Chúng tôi có đội ngũ nhân viên được đào tạo bài bản, chuyên
+                        nghiệp và tác phong chuyên nghiệp, phục vụ tận tình.
                     </span>
                 </div>
             </div>
@@ -62,17 +63,17 @@
                 </div>
                 <div class="row mt-2 justify-content-between">
                     <div class="filter-card">
-                        <h5>Filter</h5>
+                        <h5>Lọc</h5>
                         <form action="#">
                             <div class="row form-group">
                                 <div class="col-md-12">
-                                    <label for="mintopay">Check in</label>
+                                    <label for="mintopay">Ngày nhận</label>
                                     <p>
                                         <input type="date" name="checkin" id="checkin" class="form-control">
                                     </p>
                                 </div>
                                 <div class="col-md-12">
-                                    <label for="maxtopay">Check out</label>
+                                    <label for="maxtopay">Ngày trả</label>
                                     <p>
                                         <input type="date" name="checkout" id="checkout" class="form-control">
                                     </p>
@@ -81,7 +82,7 @@
 
                             <div class="row form-group">
                                 <div class="col-md-12">
-                                    <input type="submit" class="btn btn-primary btn-block" value="Limit">
+                                    <input type="submit" class="btn btn-primary btn-block" value="Giới hạn">
                                 </div>
                             </div>
                         </form>
@@ -95,24 +96,24 @@
                     <div class="row mt-3">
                         <div class="col-md-4">
                             <div class="form-inline">
-                                <label class="" for="exampleFormControlSelect1">Sort by</label>
+                                <label class="" for="exampleFormControlSelect1">Sắp xếp</label>
                                 <select class="form-control" name="sort_by" id="exampleFormControlSelect1">
-                                    <option value="">Recommended</option>
-                                    <option {%if sort_by %} selected {%endif%} value='ASC'>ASC</option>
-                                    <option {%if sort_by %} selected {%endif%} value='DSC'>DSC</option>
+                                    <option value="">Đề xuất</option>
+                                    <option {%if sort_by == 'ASC' %} selected {%endif%} value='ASC'>ASC</option>
+                                    <option {%if sort_by == 'DSC' %} selected {%endif%} value='DSC'>DSC</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-inline">
-                                <label class="" for="exampleFormControlSelect1">Search</label>
-                                <input name="search" class="form-control" value="{{search}}" placeholder="Search">
+                                <label class="" for="exampleFormControlSelect1">Tìm kiếm</label>
+                                <input name="search" class="form-control" value="{{search}}" placeholder="Tìm kiếm">
                             </div>
 
                         </div>
                         <div class="col-md-4">
                             <div class="form-inline">
-                                <label class="" for="exampleFormControlSelect1">Amenities</label>
+                                <label class="" for="exampleFormControlSelect1">Dịch vụ</label>
                                 <select name="amenities" class="form-select" multiple>
                                     {% for amenities_obj in amenities_objs %}
                                     <option {% if amenities_obj.amenity_name in amenities %} selected
@@ -125,13 +126,13 @@
                         </div>
 
                         <div class="col-md-4">
-                            <button style="margin-top: 30px;" type="submit" class="btn btn-success">Find</button>
-                            <a href="{% url 'home' %}" class="btn btn-second">Reset</a>
+                            <button style="margin-top: 30px;" type="submit" class="btn btn-success">Tìm</button>
+                            <a href="{% url 'home' %}" class="btn btn-second">Tạo lại</a>
                         </div>
                     </div>
                 </form>
                 <div class="row search-card-result">
-                    <h2 class="mt-3">ROOMS</h2>
+                    <h2 class="mt-3">PHÒNG</h2>
                 </div>
 
                 {% for room in rooms_objs %}
@@ -152,14 +153,14 @@
                     </div>
                     <div class="col-md-2 border-left text-center more-offers">
                         <p>{{ room.price }} VND </p>
-                        <p>/ 1 night</p>
-                        <p>Room count</p>
+                        <p>/ 1 đêm</p>
+                        <p>Số lượng phòng</p>
                         <p>{{ room.room_count }}</p>
                     </div>
                     <div class="col-md-2 border-left text-center more-offers">
                         <div class="btn btn-success">
                             <a href="{% url 'room_detail' room.id %}" style="text-decoration: none; color: white;">
-                                View deal
+                                Xem chi tiết
                             </a>
                         </div>
                     </div>

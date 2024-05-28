@@ -1,30 +1,30 @@
 {% extends "base.html" %}
 
 {% block start %}
-<section class="container mt-5 pt-5">
+<section class="container">
   <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
-      <a class="nav-link" id="personal-tab" data-toggle="tab" href="{% url 'profile' %}">Profile</a>
+      <a class="nav-link" id="personal-tab" data-toggle="tab" href="{% url 'profile' %}">Trang cá nhân</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link active" id="booking-tab" data-toggle="tab" href="{% url 'booking_management' profile.id %}">Booking Management</a>
+      <a class="nav-link active" id="booking-tab" data-toggle="tab" href="{% url 'booking_management' profile.id %}">Quản lý đặt phòng</a>
     </li>
   </ul>
 
   {% include "messages.html" %}
 
   <div class="booking-history">
-    <h1>{{ user.profile.fullname }}'s Bookings</h1>
+    <h1>Đơn đặt phòng của {{ user.profile.fullname }}</h1>
     <table class="table table-bordered">
       <thead>
         <tr>
-          <th>No</th>
-          <th>Room</th>
-          <th>Check-in Date</th>
-          <th>Check-out Date</th>
-          <th>Total Price</th>
-          <th>Status</th>
-          <th>Action</th>
+          <th>Số</th>
+          <th>Phòng</th>
+          <th>Ngày nhận phòng</th>
+          <th>Ngày trả phòng</th>
+          <th>Tổng tiền</th>
+          <th>Tình trạng</th>
+          <th>Hành động</th>
         </tr>
       </thead>
       <tbody>
@@ -39,11 +39,11 @@
             <td>{{ booking.total_price }}</td>
             <td>{{ booking.booking_status }}</td>
             <td>
-              <a href="{% url 'booking_detail' profile.id booking.id %}" class="btn btn-primary">View detail</a>
+              <a href="{% url 'booking_detail' profile.id booking.id %}" class="btn btn-primary">Xem chi tiết</a>
               {% if booking.booking_status == 'pending' %}
               <form action="{% url 'cancel_booking' profile.id booking.id %}" method="post" class="col-lg-6">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Cancel</button>
+                <button type="submit" class="btn btn-danger">Hủy</button>
               </form>
               {% endif %}
             </td>

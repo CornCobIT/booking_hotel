@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>The Royal Hotel</title>
+    <title>Khách sạn Hoàng Gia</title>
     <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -504,7 +504,7 @@
   </head>
   <body class="bg-light">
     <nav class="navbar navbar-expand-lg bg-body">
-      <a class="navbar-brand" href="{%url 'home' %}">The Royal Hotel</a>
+      <a class="navbar-brand" href="{%url 'home' %}">Khách sạn Hoàng Gia</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -520,13 +520,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="{%url 'home' %}">Home</a>
+            <a class="nav-link" href="{%url 'home' %}">TRANG CHỦ</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{%url 'about_us' %}">About us</a>
+            <a class="nav-link" href="{%url 'about_us' %}">GIỚI THIỆU</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{%url 'all_room' %}">Rooms</a>
+            <a class="nav-link" href="{%url 'all_room' %}">PHÒNG</a>
           </li>
           {% if user.is_authenticated %} {% if user.is_superuser %}
           <li class="nav-item dropdown">
@@ -540,7 +540,7 @@
             <ul class="dropdown-menu">
               <li>
                 <a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a>
-                <a class="dropdown-item" href="{%url 'logout' %}">Logout</a>
+                <a class="dropdown-item" href="{%url 'logout' %}">ĐĂNG XUẤT</a>
               </li>
             </ul>
           </li>
@@ -555,14 +555,14 @@
             >
             <ul class="dropdown-menu">
               <li>
-                <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
-                <a class="dropdown-item" href="{%url 'logout' %}">Logout</a>
+                <a class="dropdown-item" href="{% url 'profile' %}">Thông tin cá nhân</a>
+                <a class="dropdown-item" href="{%url 'logout' %}">Đăng xuất</a>
               </li>
             </ul>
           </li>
           {%endif%} {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'login_page' %}">Login</a>
+            <a class="nav-link" href="{% url 'login_page' %}">ĐĂNG NHẬP</a>
           </li>
           {% endif %} {%if user.is_authenticated %}
           <li>
@@ -570,7 +570,7 @@
               class="btn btn-primary btn-block"
               href="{%url 'booking'%}"
               role="button"
-              >Booking Now</a
+              >ĐẶT PHÒNG NGAY</a
             >
           </li>
           {% else %}
@@ -579,7 +579,7 @@
               class="btn btn-primary btn-block"
               href="{%url 'login_page'%}"
               role="button"
-              >Booking Now</a
+              >ĐẶT PHÒNG NGAY</a
             >
           </li>
           {% endif %}

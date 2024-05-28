@@ -7,7 +7,7 @@
         id="personal-tab"
         data-toggle="tab"
         href="{% url 'profile' %}"
-        >Profile</a
+        >Thông tin cá nhân</a
       >
     </li>
     <li class="nav-item">
@@ -16,15 +16,15 @@
         id="booking-tab"
         data-toggle="tab"
         href="{% url 'booking_management' profile.id %}"
-        >Booking Managemet</a
+        >Quản Lý Đặt Phòng</a
       >
     </li>
   </ul>
   <div class="booking-history">
-    <h1>{{ user.profile.fullname }}'s Bookings</h1>
+    <h1>Đơn đặt phòng của {{ user.profile.fullname }}</h1>
 
     <div class="row search-card-result">
-      <h3 class="text-dark">Room's Information</h3>
+      <h3 class="text-dark">Thông tin phòng</h3>
       <div class="col-md-3">
         {% if booking.room %}
         <a href="{% url 'room_detail' booking.room.id %}">
@@ -39,41 +39,38 @@
         {% endif %}
       </div>
       <div class="col-md-5">
-        <h5 class="text-dark">Room's Name: {{ booking.room.room_name }}</h5>
-        <p>Quantity of Rooms: {{ booking.num_rooms }}</p>
+        <h5 class="text-dark">Tên phòng: {{ booking.room.room_name }}</h5>
+        <p>Số lượng phòng: {{ booking.num_rooms }}</p>
       </div>
     </div>
 
     <div class="row search-card-result">
-      <h3 class="text-dark">Guest's Information</h3>
-      <p>Guest: {{ user.profile.fullname }}</p>
-      <p>Quantity of Guests: {{ booking.guests }}</p>
+      <h3 class="text-dark">Thông tin khách hàng</h3>
+      <p>Tên khách hàng: {{ user.profile.fullname }}</p>
+      <p>Số lượng khách hàng: {{ booking.guests }}</p>
     </div>
 
     <div class="row search-card-result">
-      <h3 class="text-dark">Payment Information</h3>
+      <h3 class="text-dark">Thông tin thanh toán</h3>
       <p>
-        {% if booking.num_rooms > 1 %} {{ booking.num_rooms }} rooms {% else %}
-        {{ booking.num_rooms }} room {% endif %} x {% if nights > 1 %} {{ nights
-        }} nights {% else %} {{ nights }} night {% endif %} :
+        {{ booking.num_rooms }} phòng x {{ nights }} đêm :
         <strong>{{ total_price }}</strong>
       </p>
-      <p>Payment Method: {{ booking.payment_method }}</p>
-      <p>Points: {{ points }}</p>
+      <p>Hình thức thanh toán: {{ booking.payment_method }}</p>
+      <p>Điểm: {{ points }}</p>
       <p>
         <em
-          >This point will be added if the booking and payment are
-          successful.</em
+          >Điểm này sẽ được thêm nếu đặt phòng và thanh toán thành công.</em
         >
       </p>
     </div>
     <div class="row search-card-result">
-      <h5>Total Price: {{ total_price }}</h5>
+      <h5>Tổng tiền: {{ total_price }}</h5>
     </div>
     <div>
       {% if booking.booking_status == 'confirmed' and booking.payment_status == 'completed' %}
         <div class="row search-card-result">
-          <a href="{% url 'create_review' booking.id %}">Leave a Review</a>
+          <a href="{% url 'create_review' booking.id %}">Đi đến đánh giá</a>
         </div>
       {% endif %}
     </div>
@@ -83,7 +80,7 @@
           <a
             href="{% url 'booking_management' profile.id %}"
             class="btn btn-secondary"
-            >Close</a
+            >Đóng</a
           >
         </div>
         {% if booking.booking_status == "pending" %}
@@ -93,7 +90,7 @@
             method="post"
           >
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Cancel</button>
+            <button type="submit" class="btn btn-danger">Hủy</button>
           </form>
         </div>
       </div>
