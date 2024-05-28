@@ -29,7 +29,7 @@
       aria-labelledby="personal-tab"
     >
       <div class="mb-5 pb-5">
-        <h1>Profile for {{ profile.username }}</h1>
+        <h1>Profile for {{ profile.user.username }}</h1>
         {% if profile.avatar %}
         <img
           src="{{ profile.avatar.url }}"
@@ -39,7 +39,7 @@
         />
         {% else %}
         <img
-          src="{% static 'avt-default.jpg' %}"
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcCuCOisgxyOypyBi-hRYYV2Onv7KVI6QTVA&s}"
           alt="Avatar"
           class="img-thumbnail rounded-circle"
           style="width: 200px; height: 200px"

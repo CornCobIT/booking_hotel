@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout as auth_logout
 from django.contrib import messages
@@ -9,7 +8,7 @@ from django.db.models import Q
 from .forms import BookingForm, ProfileForm, UserForm, ReviewForm
 from .utils import calculate_nights, calculate_total_price, calculate_points
 from django.utils import timezone
-from django.urls import reverse
+from django.db.models import Sum
 import re
 
 
@@ -26,9 +25,9 @@ def home(request):
 
     if sort_by:
         if sort_by == 'ASC':
-            rooms_objs = rooms_objs.order_by('room_price')
+            rooms_objs = rooms_objs.order_by('price')
         elif sort_by == 'DSC':
-            rooms_objs = rooms_objs.order_by('-room_price')
+            rooms_objs = rooms_objs.order_by('-price')
 
     if search:
         rooms_objs = rooms_objs.filter(Q(room_name__icontains=search) | Q(description__icontains=search))
@@ -115,11 +114,21 @@ def payment(request, booking_id):
     if request.method == 'POST':
         payment_method = request.POST.get('payment_method')
         submit_type = request.POST.get('submit_type')
-        print("type", submit_type)
+        use_points = request.POST.get('use_points') == 'yes'
+
+        if use_points:
+            discount = min(booking.user.points, total_price)
+            final_price = total_price - discount
+            booking.user.points -= discount
+            booking.total_price = final_price
+            booking.user.save()
+            booking.save()
+            messages.success(request, f'{discount} points used. Your new balance is {booking.user.points} points.')
+        print('price', booking.total_price)
         booking.payment_method = payment_method
-        if submit_type == 'next' or submit_type == 'done':
+
+        if submit_type in ['next', 'done']:
             room_obj.room_count -= booking.num_rooms
-            print("còn lại", room_obj.room_count)
             room_obj.save()
             booking.save()
 
@@ -138,11 +147,9 @@ def payment(request, booking_id):
 @login_required
 def qr_payment(request, booking_id):
     booking = get_object_or_404(RoomBooking, id=booking_id)
-    total_price = booking.total_price
-
     context = {
         'booking': booking,
-        'total_price': total_price,
+        'final_price': booking.total_price,
     }
     return render(request, 'qr_payment.html', context)
 
@@ -231,15 +238,12 @@ def all_room(request):
 @login_required
 def profile(request):
     user_profile = UserProfile.objects.get(user=request.user)
-    bookings = user_profile.bookings.filter(booking_status='confirmed', payment_status='completed')
+    bookings = user_profile.bookings.filter(
+        booking_status='confirmed',
+        payment_status='completed'
+    )
 
-    total_points = 0
-    for booking in bookings:
-        points = calculate_points(booking.total_price)
-        total_points += points
-
-    user_profile.points += total_points
-    user_profile.save()
+    total_points = sum(calculate_points(booking.total_price) for booking in bookings)
 
     context = {
         'profile': user_profile,
@@ -275,9 +279,11 @@ def edit_profile(request, user_id):
 def booking_management(request, user_id):
     profile = get_object_or_404(UserProfile, id=user_id)
     bookings = RoomBooking.objects.filter(user=profile)
+    counter = 0
     context = {
         'profile': profile,
         'bookings': bookings,
+        'counter': counter,
     }
     return render(request, 'booking_management.html', context)
 
@@ -325,7 +331,6 @@ def cancel_booking(request, user_id, booking_id):
 def create_review(request, booking_id):
     booking = get_object_or_404(RoomBooking, id=booking_id, user=request.user.profile)
 
-    # Kiểm tra trạng thái booking và payment
     if booking.booking_status != 'confirmed' or booking.payment_status != 'completed':
         messages.warning(request, 'You can only leave a review after your booking is confirmed and paid.')
         return redirect('booking_detail', user_id=booking.user.id, booking_id=booking.id)
@@ -347,4 +352,3 @@ def create_review(request, booking_id):
         'form': form,
     }
     return render(request, 'create_review.html', context)
-

@@ -1,12 +1,10 @@
-{% extends "base.html" %} {% block start %}
-<div class="container mt-5 pt-5">
+{% extends "base.html" %}
+
+{% block start %}
+<div class="container my-5">
   <div class="row search-card-result mt-5 pt-5">
     <div class="col-md-3">
-      <img
-        class="img-fluid"
-        src="{{ room_obj.images.first.images.url }}"
-        alt="Card image cap"
-      />
+      <img class="img-fluid" src="{{ room_obj.images.first.images.url }}" alt="Card image cap" />
     </div>
     <div class="col-md-5">
       <h5>{{ room_obj.room_name }}</h5>
@@ -29,12 +27,7 @@
   <div class="row">
     {% for image in room_obj.images.all %}
     <div class="col-md-3">
-      <img
-        src="{{ image.images.url }}"
-        class="img-fluid"
-        alt="Room image"
-        style="height: 150px; width: 150px"
-      />
+      <img src="{{ image.images.url }}" class="img-fluid" alt="Room image" style="height: 150px; width: 150px" />
     </div>
     {% endfor %}
   </div>
@@ -42,42 +35,44 @@
     <h5>Book Room</h5>
     {% if user.is_authenticated %}
     <form method="post">
-      {% csrf_token %} {% include "messages.html" %}
+      {% csrf_token %}
+      {% include "messages.html" %}
       <label for="payment_method">Choose Payment Method:</label>
       <select id="payment_method" name="payment_method">
-        <option value="credit_card">Credit Card</option>
-        <option value="debit_card">Debit Card</option>
-        <option value="paypal">PayPal</option>
-        <option value="cash">Cash</option>
+          <option value="credit_card">Credit Card</option>
+          <option value="debit_card">Debit Card</option>
+          <option value="paypal">PayPal</option>
+          <option value="cash">Cash</option>
       </select>
-      <p>Total Price: {{ total_price }}</p>
-      {% if value == "cash" %}
-      <button type="submit" class="btn btn-success" id="submitBtn" name="submit_type" value="done">Done</button>
-      {% else %}
+      <p>Total Price: <span id="total-price">{{ total_price }}</span> VND</p>
+          <div class="form-group d-flex align-items-center">
+              <input type="checkbox" id="use-points" name="use_points" value="yes" class="mr-3">
+              <p class="mb-0">Use points: {{ booking.user.points }}</p>
+          </div>
       <button type="submit" class="btn btn-primary" id="submitBtn" name="submit_type" value="next">Next</button>
-      {% endif %}
     </form>
     {% else %}
-    <p>
-      You need to <a href="{% url 'login_page' %}">login</a> to book a room.
-    </p>
+    <p>You need to <a href="{% url 'login_page' %}">login</a> to book a room.</p>
     {% endif %}
   </div>
 </div>
+
 <script>
-  document
-    .getElementById("payment_method")
-    .addEventListener("change", function () {
-      var selectedOption = this.value;
-      if (selectedOption == "cash") {
-        document.getElementById("submitBtn").textContent = "Done";
-        document.getElementById("submitBtn").classList.remove("btn-primary");
-        document.getElementById("submitBtn").classList.add("btn-success");
-      } else {
-        document.getElementById("submitBtn").textContent = "Next";
-        document.getElementById("submitBtn").classList.remove("btn-success");
-        document.getElementById("submitBtn").classList.add("btn-primary");
-      }
-    });
+  document.getElementById("payment_method").addEventListener("change", function () {
+    var selectedOption = this.value;
+    var cashSection = document.getElementById("cash-section");
+    var submitBtn = document.getElementById("submitBtn");
+    if (selectedOption == "cash") {
+      submitBtn.textContent = "Done";
+      submitBtn.classList.remove("btn-primary");
+      submitBtn.classList.add("btn-success");
+      cashSection.style.display = "block";
+    } else {
+      submitBtn.textContent = "Next";
+      submitBtn.classList.remove("btn-success");
+      submitBtn.classList.add("btn-primary");
+      cashSection.style.display = "none";
+    }
+  });
 </script>
 {% endblock %}
