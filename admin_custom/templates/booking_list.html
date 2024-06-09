@@ -1,0 +1,74 @@
+{% extends "ad_base.html" %} {% block start %}
+<h1>Quản lý đặt phòng</h1>
+{% include "messages.html" %}
+<a href="{% url 'add_booking' %}" class="btn btn-primary">Thêm đặt phòng mới</a>
+<form method="get" class="my-3">
+  <label for="filter">Sắp xếp theo:</label>
+  <select
+    id="filter"
+    name="filter"
+    class="form-select"
+    onchange="this.form.submit()"
+  >
+    <option value="" disabled selected>Chọn tiêu chí</option>
+    <option value="created_at">Thời gian tạo</option>
+    <option value="user__user__username">Tên người dùng</option>
+    <option value="payment_status">Trạng thái thanh toán</option>
+    <option value="booking_status">Trạng thái đặt phòng</option>
+  </select>
+
+  <label for="sort_order">Thứ tự:</label>
+  <select
+    id="sort_order"
+    name="sort_order"
+    class="form-select"
+    onchange="this.form.submit()"
+  >
+    <option value="" disabled selected>Chọn thứ tự</option>
+    <option value="asc">Tăng dần (A-Z hoặc Cũ nhất)</option>
+    <option value="desc">Giảm dần (Z-A hoặc Mới nhất)</option>
+  </select>
+</form>
+<table class="table">
+  <thead>
+    <tr>
+      <th>STT</th>
+      <th>Phòng</th>
+      <th>Người dùng</th>
+      <th>Ngày nhận phòng</th>
+      <th>Ngày trả phòng</th>
+      <th>Trạng thái thanh toán</th>
+      <th>Trạng thái đặt phòng</th>
+      <th>Tổng tiền</th>
+      <th>Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for booking in bookings %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ booking.room.room_name }}</td>
+      <td>{{ booking.user.username }}</td>
+      <td>{{ booking.check_in_date }}</td>
+      <td>{{ booking.check_out_date }}</td>
+      <td>{{ booking.payment_status }}</td>
+      <td>{{ booking.booking_status }}</td>
+      <td>{{ booking.total_price }}</td>
+      <td>
+        <a href="{% url 'edit_booking' booking.id %}" class="btn btn-warning"
+          >Sửa</a
+        >
+        <form
+          action="{% url 'delete_booking' booking.id %}"
+          method="post"
+          style="display: inline"
+        >
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Xóa</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

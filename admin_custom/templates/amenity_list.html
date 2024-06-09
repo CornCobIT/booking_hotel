@@ -1,0 +1,62 @@
+{% extends "ad_base.html" %} {% block start %}
+<h1>Quản lý tiện ích</h1>
+{% include "messages.html" %}
+<a href="{% url 'add_amenity' %}" class="btn btn-primary">Thêm tiện ích mới</a>
+
+<form method="get" class="my-3">
+  <label for="filter">Lọc theo:</label>
+  <select
+    id="filter"
+    name="filter"
+    class="form-select"
+    onchange="this.form.submit()"
+  >
+    <option value="" disabled selected>Chọn tiêu chí</option>
+    <option value="created_at">Thời gian tạo</option>
+    <option value="amenity_name">Tên tiện ích</option>
+  </select>
+
+  <label for="sort_order">Sắp xếp:</label>
+  <select
+    id="sort_order"
+    name="sort_order"
+    class="form-select"
+    onchange="this.form.submit()"
+  >
+    <option value="" disabled selected>Chọn thứ tự</option>
+    <option value="asc">Tăng dần (A-Z hoặc Cũ nhất)</option>
+    <option value="desc">Giảm dần (Z-A hoặc Mới nhất)</option>
+  </select>
+</form>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">STT</th>
+      <th scope="col">Tên tiện ích</th>
+      <th scope="col">Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for obj in objs %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ obj.amenity_name }}</td>
+      <td>
+        <a href="{% url 'edit_amenity' obj.id %}" class="btn btn-warning"
+          >Sửa</a
+        >
+        <form
+          action="{% url 'delete_amenity' obj.id %}"
+          method="post"
+          style="display: inline"
+        >
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Xóa</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

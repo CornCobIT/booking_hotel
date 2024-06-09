@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from django.conf.urls import handler404
 from .views import *
 from django.conf.urls.static import static

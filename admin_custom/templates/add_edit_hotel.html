@@ -1,0 +1,49 @@
+{% extends "ad_base.html" %} {% block start %}
+<h1>{{ title }}</h1>
+{% include "messages.html" %}
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="id_hotel_name">Tên khách sạn</label>
+    <input
+      type="text"
+      class="form-control"
+      id="id_hotel_name"
+      name="hotel_name"
+      value="{{ form.hotel_name.value|default_if_none:'' }}"
+    />
+  </div>
+  <div class="form-group">
+    <label for="id_description">Mô tả</label>
+    <textarea class="form-control" id="id_description" name="description">
+{{ form.description.value|default_if_none:'' }}</textarea
+    >
+  </div>
+  <div class="form-group">
+    <label for="id_address">Địa chỉ</label>
+    <input
+      type="text"
+      class="form-control"
+      id="id_address"
+      name="address"
+      value="{{ form.address.value|default_if_none:'' }}"
+    />
+  </div>
+  <div class="form-group">
+    <label for="id_phone_number">Số điện thoại</label>
+    <input
+      type="text"
+      class="form-control"
+      id="id_phone_number"
+      name="phone_number"
+      value="{{ form.phone_number.value|default_if_none:'' }}"
+    />
+  </div>
+  <div class="form-group">
+    <label for="id_image">Hình ảnh</label>
+    <input type="file" class="form-control" id="id_image" name="image" />
+  </div>
+  <button type="submit" class="btn btn-success">Lưu</button>
+  <a href="{% url 'admin_hotels' %}" class="btn btn-secondary">Quay lại</a>
+</form>
+{% endblock %}

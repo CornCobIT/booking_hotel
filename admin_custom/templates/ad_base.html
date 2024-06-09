@@ -1,0 +1,187 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Khách sạn Hoàng Gia</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  </head>
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'admin_dashboard' %}"
+          >Trang chủ Admin</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNavDropdown"
+          aria-controls="navbarNavDropdown"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="{% url 'user_profile_list' %}"
+                id="roomsDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Quản lý người dùng
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="roomsDropdown">
+                <li>
+                  <a class="dropdown-item" href="{% url 'user_profile_list' %}"
+                    >Tất cả</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'add_user_profile' %}"
+                    >Thêm mới</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="{% url 'admin_hotels' %}"
+                id="hotelsDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Quản lý khách sạn
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="hotelsDropdown">
+                <li>
+                  <a class="dropdown-item" href="{% url 'admin_hotels' %}"
+                    >Tất cả</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'add_hotel' %}"
+                    >Thêm mới</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="{% url 'admin_rooms' %}"
+                id="roomsDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Quản lý phòng
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="roomsDropdown">
+                <li>
+                  <a class="dropdown-item" href="{% url 'admin_rooms' %}"
+                    >Tất cả</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'add_room' %}"
+                    >Thêm mới</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'admin_room_images' %}"
+                    >Quản lý ảnh</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="{% url 'admin_bookings' %}"
+                id="roomsDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Quản lý đặt phòng
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="roomsDropdown">
+                <li>
+                  <a class="dropdown-item" href="{% url 'admin_bookings' %}"
+                    >Tất cả</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'add_booking' %}"
+                    >Thêm mới</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="{% url 'admin_amenities' %}"
+                id="roomsDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Quản lý tiện ích
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="roomsDropdown">
+                <li>
+                  <a class="dropdown-item" href="{% url 'admin_amenities' %}"
+                    >Tất cả</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'add_amenity' %}"
+                    >Thêm mới</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="{% url 'admin_reviews' %}"
+                role="button"
+              >
+                Quản lý đánh giá
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'admin_logout' %}">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    {% block start %}{% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"></script>
+  </body>
+</html>

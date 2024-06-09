@@ -1,0 +1,64 @@
+{% extends "ad_base.html" %} {% block start %}
+<h1>Quản lý khách sạn</h1>
+{% include "messages.html" %}
+<a href="{% url 'add_hotel' %}" class="btn btn-primary">Thêm khách sạn mới</a>
+<form method="get" class="my-3">
+  <label for="filter">Lọc theo:</label>
+  <select
+    id="filter"
+    name="filter"
+    class="form-select"
+    onchange="this.form.submit()"
+  >
+    <option value="" disabled selected>Chọn tiêu chí</option>
+    <option value="created_at">Thời gian tạo</option>
+    <option value="hotel_name">Tên khách sạn</option>
+  </select>
+
+  <label for="sort_order">Sắp xếp:</label>
+  <select
+    id="sort_order"
+    name="sort_order"
+    class="form-select"
+    onchange="this.form.submit()"
+  >
+    <option value="" disabled selected>Chọn thứ tự</option>
+    <option value="asc">Tăng dần (A-Z hoặc Cũ nhất)</option>
+    <option value="desc">Giảm dần (Z-A hoặc Mới nhất)</option>
+  </select>
+</form>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">STT</th>
+      <th scope="col">Tên khách sạn</th>
+      <th scope="col">Số điện thoại</th>
+      <th scope="col">Địa chỉ</th>
+      <th scope="col">Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for hotel in hotels %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ hotel.hotel_name }}</td>
+      <td>{{ hotel.phone_number }}</td>
+      <td>{{ hotel.address }}</td>
+      <td>
+        <a href="{% url 'edit_hotel' hotel.id %}" class="btn btn-warning"
+          >Sửa</a
+        >
+        <form
+          action="{% url 'delete_hotel' hotel.id %}"
+          method="post"
+          style="display: inline"
+        >
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Xóa</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

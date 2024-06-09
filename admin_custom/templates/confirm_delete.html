@@ -1,0 +1,9 @@
+{% extends "ad_base.html" %} {% block start %}
+<h1>Xác nhận xóa</h1>
+<p>Bạn có chắc chắn muốn xóa "{{ object }}" không?</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Xóa</button>
+  <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Hủy</a>
+</form>
+{% endblock %}

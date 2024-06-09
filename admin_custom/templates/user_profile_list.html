@@ -1,0 +1,45 @@
+{% extends "ad_base.html" %} {% block start %}
+<h1>Quản lý người dùng</h1>
+{% include "messages.html" %}
+<a href="{% url 'add_user_profile' %}" class="btn btn-primary"
+  >Thêm người dùng mới</a
+>
+<table class="table">
+  <thead>
+    <tr>
+      <th>STT</th>
+      <th>Tên đăng nhập</th>
+      <th>Email</th>
+      <th>Họ và tên</th>
+      <th>Phân quyền</th>
+      <th>Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ user.username }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.profile.fullname }}</td>
+      <td>
+        {% if user.is_superuser %} Admin {% else %} Người dùng {% endif %}
+      </td>
+      <td>
+        <a href="{% url 'edit_user_profile' user.id %}" class="btn btn-warning"
+          >Sửa</a
+        >
+        <form
+          action="{% url 'delete_user_profile' user.id %}"
+          method="post"
+          style="display: inline"
+        >
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Xóa</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
