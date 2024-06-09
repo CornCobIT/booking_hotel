@@ -1,0 +1,35 @@
+{% extends "ad_base.html" %} {% block start %}
+<h1>{{ title }}</h1>
+{% include "messages.html" %}
+<form method="post">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="id_room">Phòng</label>
+    {{ form.room }}
+  </div>
+  <div class="form-group">
+    <label for="id_user">Người dùng</label>
+    {{ form.user }}
+  </div>
+  <div class="form-group">
+    <label for="id_rating">Điểm đánh giá</label>
+    <input
+      type="number"
+      class="form-control"
+      id="id_rating"
+      name="rating"
+      value="{{ form.rating.value|default_if_none:'' }}"
+      min="1"
+      max="5"
+    />
+  </div>
+  <div class="form-group">
+    <label for="id_comment">Nhận xét</label>
+    <textarea class="form-control" id="id_comment" name="comment">
+{{ form.comment.value|default_if_none:'' }}</textarea
+    >
+  </div>
+  <button type="submit" class="btn btn-success">Lưu</button>
+  <a href="{% url 'admin_reviews' %}" class="btn btn-secondary">Quay lại</a>
+</form>
+{% endblock %}

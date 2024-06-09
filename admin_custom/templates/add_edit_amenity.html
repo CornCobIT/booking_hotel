@@ -1,0 +1,21 @@
+{% extends "base.html" %} {% block start %}
+<div class="container mt-5">
+  <h2>{{ title }}</h2>
+  <form method="post" action="">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="name">Tên tiện ích</label>
+      <input
+        type="text"
+        class="form-control"
+        id="name"
+        name="name"
+        value="{{ amenity.amenity_name|default_if_none:'' }}"
+        required
+      />
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">{{ title }}</button>
+    <a href="{% url 'admin_amenities' %}" class="btn btn-secondary">Quay lại</a>
+  </form>
+</div>
+{% endblock %}

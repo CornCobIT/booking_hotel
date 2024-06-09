@@ -1,0 +1,9 @@
+{% extends "ad_base.html" %} {% block start %}
+<h1>{{ title }}</h1>
+{% include "messages.html" %}
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">Lưu</button>
+  <a href="{% url 'admin_bookings' %}" class="btn btn-secondary">Quay lại</a>
+</form>
+{% endblock %}

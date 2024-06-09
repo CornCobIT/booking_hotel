@@ -1,0 +1,8 @@
+{% extends "ad_base.html" %} {% block start %}
+<h1>{{ title }}</h1>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %} {{ user_form.as_p }} {{ profile_form.as_p }}
+  <button type="submit" class="btn btn-success">Lưu</button>
+</form>
+<a href="{% url 'user_profile_list' %}" class="btn btn-secondary">Quay lại</a>
+{% endblock %}
