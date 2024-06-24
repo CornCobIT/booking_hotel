@@ -18,7 +18,7 @@ def admin_login(request):
             password = request.POST.get('password')
             user_obj = User.objects.filter(username=username)
             if not user_obj.exists():
-                messages.info(request, 'Account not found!')
+                messages.info(request, 'Không tìm thấy tài khoản!')
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
             
             user_obj = authenticate(username=username, password=password)
@@ -27,7 +27,7 @@ def admin_login(request):
                 login(request, user_obj)
                 return redirect('/dashboard')
             
-            messages.info(request, 'Invalid password!')
+            messages.info(request, 'Mật khẩu không hợp lệ!')
             return redirect('/')
         return render(request, 'admin_login.html')
     
@@ -77,7 +77,7 @@ def add_user_profile(request):
         user_form = UserForm()
         profile_form = UserProfileForm()
 
-    return render(request, 'add_edit_user_profile.html', {'user_form': user_form, 'profile_form': profile_form, 'title': 'Add User Profile'})
+    return render(request, 'add_edit_user_profile.html', {'user_form': user_form, 'profile_form': profile_form, 'title': 'Thêm thông tin người dùng'})
 
 @login_required
 def edit_user_profile(request, user_id):
@@ -96,7 +96,7 @@ def edit_user_profile(request, user_id):
         user_form = UserForm(instance=user)
         profile_form = UserProfileForm(instance=profile)
 
-    return render(request, 'add_edit_user_profile.html', {'user_form': user_form, 'profile_form': profile_form, 'title': 'Edit User Profile'})
+    return render(request, 'add_edit_user_profile.html', {'user_form': user_form, 'profile_form': profile_form, 'title': 'Chỉnh sửa thông tin người dùng'})
 
 @login_required
 def delete_user_profile(request, user_id):
